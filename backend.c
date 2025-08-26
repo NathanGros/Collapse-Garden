@@ -1,5 +1,6 @@
 #include "backend.h"
 #include "types.h"
+#include <raylib.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -155,4 +156,16 @@ void collapseOneTile(Grid *grid) {
     }
     free(possibleTilesIndexes);
     free(nbGridCollapsedNeighbors);
+}
+
+void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius) {
+    for (int i = 0; i < grid->nbTiles; i++) {
+        Tile *tile = grid->tiles[i];
+        int tileX = tile->posX;
+        int tileY = tile->posY;
+        Vector2 tileCenterScreen = GetWorldToScreen((Vector3) {(float) tileX, 0.0f, (float) tileY}, camera);
+        if (CheckCollisionPointCircle(tileCenterScreen, GetMousePosition(), circleRadius)) {
+            uncollapseTile(grid, tileX, tileY);
+        }
+    }
 }

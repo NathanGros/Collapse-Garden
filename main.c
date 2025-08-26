@@ -58,6 +58,7 @@ int main() {
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
     srand(time(NULL));
+    float timer = 0.0f;
 
     // Camera
     float targetDistance = 35.;
@@ -70,6 +71,10 @@ int main() {
 
     // Grid
     Grid *grid = makeGrid(GRID_WIDTH, GRID_HEIGHT);
+    // temp
+    for (int i = 0; i < grid->nbTiles; i++) {
+        collapseOneTile(grid);
+    }
 
     // Loop
     while (!WindowShouldClose()) {
@@ -79,8 +84,15 @@ int main() {
             screenHeight = GetScreenHeight();
         }
 
-        if (IsKeyPressed(KEY_SPACE))
+        timer += GetFrameTime();
+        if (timer >= 0.02f && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             collapseOneTile(grid);
+            timer = 0.0f;
+        }
+
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            uncollapseMouseTiles(grid, camera, GetScreenHeight() / 4.);
+        }
 
         // Camera
         updateCamera(&camera, &targetDistance);
@@ -91,6 +103,7 @@ int main() {
         ClearBackground(backgroundColor);
         drawGrid(grid);
         EndMode3D();
+        DrawCircle(GetMouseX(), GetMouseY(), GetScreenHeight() / 4., (Color) {255, 255, 255, 100});
         EndDrawing();
     }
     CloseWindow();
