@@ -2,7 +2,7 @@
 
 void windowSetup(Color backgroundColor) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(1500, 900, "Lakes and Bridges");
+    InitWindow(1500, 900, "Collapse Garden");
     ClearBackground(backgroundColor);
     SetTargetFPS(60);
 }
