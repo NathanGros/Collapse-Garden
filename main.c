@@ -1,64 +1,28 @@
 #include "types.h"
 #include "backend.h"
+#include "movement.h"
 #include "drawing.h"
 #include <time.h>
 #include <raylib.h>
-#include <math.h>
 #include <stdlib.h>
 
 #define GRID_WIDTH 13
 #define GRID_HEIGHT 9
 
-// Init
-
-void Init(Color backgroundColor) {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(1500, 900, "Lakes and Bridges");
-    ClearBackground(backgroundColor);
-    SetTargetFPS(60);
-}
-
-void updateCamera(Camera3D *camera, float *targetDistance) {
-    if (IsKeyPressed(KEY_W)) {
-        camera->target.z -= 1;
-    }
-    if (IsKeyPressed(KEY_S)) {
-        camera->target.z += 1;
-    }
-    if (IsKeyPressed(KEY_A)) {
-        camera->target.x -= 1;
-    }
-    if (IsKeyPressed(KEY_D)) {
-        camera->target.x += 1;
-    }
-
-    // camera zoom
-    *targetDistance *= 1. - 0.2 * GetMouseWheelMove();
-    if (*targetDistance <= 10.) *targetDistance = 10.;
-    if (*targetDistance >= 70.) *targetDistance = 70.;
-
-    // camera position
-    int screenWidth = GetScreenWidth();
-    int screenHeight = GetScreenHeight();
-    float pi = 3.141592;
-    float verticalAngle = pi / 3.;
-    float horizontalAngle = pi / 2.;
-    if (screenHeight > screenWidth) horizontalAngle = pi;
-    camera->position.x = camera->target.x + *targetDistance * cos(horizontalAngle) * cos(verticalAngle);
-    camera->position.y = camera->target.y + *targetDistance * sin(verticalAngle);
-    camera->position.z = camera->target.z + *targetDistance * sin(horizontalAngle) * cos(verticalAngle);
-}
-
-// Main
-
 int main() {
     // Init
     Color backgroundColor = (Color){0, 139, 255};
-    Init(backgroundColor);
+    windowSetup(backgroundColor);
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
     srand(time(NULL));
-    float timer = 0.0f;
+    float timerCollapse = 0.0f;
+    float timerCircleOverlay = 0.0f;
+    int mouseX = GetMouseX();
+    int mouseY = GetMouseY();
+    int playerX = GRID_WIDTH / 2;
+    int playerY = GRID_HEIGHT / 2;
+    float circleOverlayRadius = GetScreenHeight() / 4.;
 
     // Camera
     float targetDistance = 35.;
@@ -84,14 +48,25 @@ int main() {
             screenHeight = GetScreenHeight();
         }
 
-        timer += GetFrameTime();
-        if (timer >= 0.02f && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        timerCollapse += GetFrameTime();
+        if (timerCollapse >= 0.01f && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             collapseOneTile(grid);
-            timer = 0.0f;
+            timerCollapse = 0.0f;
         }
 
+        executeControls(grid, &playerX, &playerY, &camera);
+
+        timerCircleOverlay += GetFrameTime();
+        int newMouseX = GetMouseX();
+        int newMouseY = GetMouseY();
+        if (newMouseX != mouseX || newMouseY != mouseY) {
+            timerCircleOverlay = 0.0f;
+            mouseX = newMouseX;
+            mouseY = newMouseY;
+        }
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            uncollapseMouseTiles(grid, camera, GetScreenHeight() / 4.);
+            uncollapseMouseTiles(grid, camera, circleOverlayRadius, playerX, playerY);
+            timerCircleOverlay = 0.0f;
         }
 
         // Camera
@@ -102,8 +77,10 @@ int main() {
         BeginMode3D(camera);
         ClearBackground(backgroundColor);
         drawGrid(grid);
+        drawPlayer(playerX, playerY);
         EndMode3D();
-        DrawCircle(GetMouseX(), GetMouseY(), GetScreenHeight() / 4., (Color) {255, 255, 255, 100});
+        if (timerCircleOverlay <= 2.)
+            drawCircleOverlay(circleOverlayRadius);
         EndDrawing();
     }
     CloseWindow();

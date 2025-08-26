@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 void addTile(Grid *grid, Tile *tile) {
-    if (grid->nbTiles >= grid->width * grid->height * 2) return;
     grid->tiles[grid->nbTiles] = tile;
     grid->nbTiles++;
 }
@@ -139,7 +138,7 @@ void collapseOneTile(Grid *grid) {
         nbGridCollapsedNeighbors[i] = countCollapsedNeighbors(grid, tile->posX, tile->posY);
     }
     // Find a list of collapsable tiles and pick a random one
-    int *possibleTilesIndexes = malloc(grid->width * grid->height * sizeof(int));
+    int *possibleTilesIndexes = malloc(grid->nbTiles * sizeof(int));
     int nbPossibleTiles = 0;
     for (int n = 4; n >= 0; n--) {
         for (int i = 0; i < grid->nbTiles; i++) {
@@ -158,11 +157,13 @@ void collapseOneTile(Grid *grid) {
     free(nbGridCollapsedNeighbors);
 }
 
-void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius) {
+void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int playerX, int playerY) {
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];
         int tileX = tile->posX;
         int tileY = tile->posY;
+        if (tileX == playerX && tileY == playerY)
+            continue;
         Vector2 tileCenterScreen = GetWorldToScreen((Vector3) {(float) tileX, 0.0f, (float) tileY}, camera);
         if (CheckCollisionPointCircle(tileCenterScreen, GetMousePosition(), circleRadius)) {
             uncollapseTile(grid, tileX, tileY);

@@ -9,6 +9,6 @@ void removeTile(Grid *grid, int posX, int posY);
 void collapseTile(Grid *grid, int posX, int posY);
 void uncollapseTile(Grid *grid, int posX, int posY);
 void collapseOneTile(Grid *grid);
-void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius);
+void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int playerX, int playerY);
 
 #endif
