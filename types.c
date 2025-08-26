@@ -12,6 +12,7 @@ Tile *makeTile() {
     Tile *tile = malloc(sizeof(Tile));
     tile->posX = 0;
     tile->posY = 0;
+    tile->collapsed = false;
     tile->north = makeConnection();
     tile->east = makeConnection();
     tile->south = makeConnection();
@@ -25,7 +26,10 @@ Grid *makeGrid(int width, int height) {
     Grid *grid = malloc(sizeof(Grid));
     grid->width = width;
     grid->height = height;
-    grid->tiles = malloc(width * height * sizeof(Tile *));
+    grid->cornerPosX = 0;
+    grid->cornerPosY = 0;
+    grid->nbTiles = width * height;
+    grid->tiles = malloc( 2 * width * height * sizeof(Tile *)); //more space than needed for freedom
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             Tile *tile = makeTile();
@@ -38,7 +42,7 @@ Grid *makeGrid(int width, int height) {
 }
 
 void freeGrid(Grid *grid) {
-    for (int i = 0; i < grid->width * grid->height; i++) {
+    for (int i = 0; i < grid->nbTiles; i++) {
         freeTile(grid->tiles[i]);
     }
     free(grid->tiles);

@@ -1,13 +1,42 @@
 #include "drawing.h"
 #include <raylib.h>
 
+void drawTile(Tile *tile) {
+    Vector3 pos = (Vector3){tile->posX, 0., tile->posY};
+    if (!tile->collapsed) {
+        DrawCube(pos, 1., 1., 1., RAYWHITE);
+        return;
+    }
+    DrawCube(pos, 1., 1., 1., GREEN);
+    // DrawCubeWires(pos, 1., 1., 1., DARKGREEN);
+    if (tile->north.water == true) {
+        DrawLine3D((Vector3){tile->posX, 0.6, tile->posY - 0.5}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+    }
+    if (tile->east.water == true) {
+        DrawLine3D((Vector3){tile->posX + 0.5, 0.6, tile->posY}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+    }
+    if (tile->south.water == true) {
+        DrawLine3D((Vector3){tile->posX, 0.6, tile->posY + 0.5}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+    }
+    if (tile->west.water == true) {
+        DrawLine3D((Vector3){tile->posX - 0.5, 0.6, tile->posY}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+    }
+    if (tile->north.bridge == true) {
+        DrawLine3D((Vector3){tile->posX, 0.8, tile->posY - 0.5}, (Vector3){tile->posX, 0.8, tile->posY}, BROWN);
+    }
+    if (tile->east.bridge == true) {
+        DrawLine3D((Vector3){tile->posX + 0.5, 0.8, tile->posY}, (Vector3){tile->posX, 0.8, tile->posY}, BROWN);
+    }
+    if (tile->south.bridge == true) {
+        DrawLine3D((Vector3){tile->posX, 0.8, tile->posY + 0.5}, (Vector3){tile->posX, 0.8, tile->posY}, BROWN);
+    }
+    if (tile->west.bridge == true) {
+        DrawLine3D((Vector3){tile->posX - 0.5, 0.8, tile->posY}, (Vector3){tile->posX, 0.8, tile->posY}, BROWN);
+    }
+}
+
 void drawGrid(Grid *grid) {
-    for (int i = 0; i < grid->width; i++) {
-        for (int j = 0; j < grid->height; j++) {
-            Tile *tile = grid->tiles[i * grid->height + j];
-            Vector3 pos = (Vector3){tile->posX, 0., tile->posY};
-            DrawCube(pos, 1., 1., 1., GREEN);
-            DrawCubeWires(pos, 1., 1., 1., DARKGREEN);
-        }
+    for (int i = 0; i < grid->nbTiles; i++) {
+        drawTile(grid->tiles[i]);
     }
 }

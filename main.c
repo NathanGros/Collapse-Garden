@@ -1,7 +1,13 @@
 #include "types.h"
+#include "backend.h"
 #include "drawing.h"
+#include <time.h>
 #include <raylib.h>
 #include <math.h>
+#include <stdlib.h>
+
+#define GRID_WIDTH 13
+#define GRID_HEIGHT 9
 
 // Init
 
@@ -51,6 +57,7 @@ int main() {
     Init(backgroundColor);
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
+    srand(time(NULL));
 
     // Camera
     float targetDistance = 35.;
@@ -62,7 +69,7 @@ int main() {
     camera.projection = CAMERA_PERSPECTIVE;
 
     // Grid
-    Grid *grid = makeGrid(13, 9);
+    Grid *grid = makeGrid(GRID_WIDTH, GRID_HEIGHT);
 
     // Loop
     while (!WindowShouldClose()) {
@@ -71,6 +78,9 @@ int main() {
             screenWidth = GetScreenWidth();
             screenHeight = GetScreenHeight();
         }
+
+        if (IsKeyPressed(KEY_SPACE))
+            collapseOneTile(grid);
 
         // Camera
         updateCamera(&camera, &targetDistance);
