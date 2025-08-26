@@ -16,8 +16,6 @@ int main() {
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
     srand(time(NULL));
-    float timerCollapse = 0.0f;
-    float timerCircleOverlay = 0.0f;
     int mouseX = GetMouseX();
     int mouseY = GetMouseY();
     int playerX = GRID_WIDTH / 2;
@@ -32,6 +30,11 @@ int main() {
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};
     camera.fovy = 20.0f;
     camera.projection = CAMERA_PERSPECTIVE;
+
+    // Timers
+    float timerCollapse = 0.;
+    float timerCircleOverlay = 0.;
+    float timerMovement = 0.;
 
     // Grid
     Grid *grid = makeGrid(GRID_WIDTH, GRID_HEIGHT);
@@ -49,24 +52,28 @@ int main() {
         }
 
         timerCollapse += GetFrameTime();
-        if (timerCollapse >= 0.01f && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        timerCircleOverlay += GetFrameTime();
+        timerMovement += GetFrameTime();
+
+        if (timerCollapse >= 0.01 && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             collapseOneTile(grid);
-            timerCollapse = 0.0f;
+            timerCollapse = 0.;
         }
 
-        executeControls(grid, &playerX, &playerY, &camera);
+        if (timerMovement >= 0.5) {
+            executeControls(grid, &playerX, &playerY, &camera, &timerMovement);
+        }
 
-        timerCircleOverlay += GetFrameTime();
         int newMouseX = GetMouseX();
         int newMouseY = GetMouseY();
         if (newMouseX != mouseX || newMouseY != mouseY) {
-            timerCircleOverlay = 0.0f;
+            timerCircleOverlay = 0.;
             mouseX = newMouseX;
             mouseY = newMouseY;
         }
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             uncollapseMouseTiles(grid, camera, circleOverlayRadius, playerX, playerY);
-            timerCircleOverlay = 0.0f;
+            timerCircleOverlay = 0.;
         }
 
         // Camera

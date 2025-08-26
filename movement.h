@@ -8,6 +8,6 @@
 
 void updateCamera(Camera3D *camera, float *targetDistance);
 void movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY);
-void executeControls(Grid *grid, int *playerX, int *playerY, Camera3D *camera);
+void executeControls(Grid *grid, int *playerX, int *playerY, Camera3D *camera, float *timerMovement);
 
 #endif

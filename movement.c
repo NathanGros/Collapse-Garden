@@ -1,4 +1,5 @@
 #include "movement.h"
+#include <raylib.h>
 
 void updateCamera(Camera3D *camera, float *targetDistance) {
     // camera zoom
@@ -116,21 +117,29 @@ void movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
     }
 }
 
-void executeControls(Grid *grid, int *playerX, int *playerY, Camera3D *camera) {
-    if (IsKeyPressed(KEY_W)) {
+void executeControls(Grid *grid, int *playerX, int *playerY, Camera3D *camera, float *timerMovement) {
+    if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
         movePlayer(grid, playerX, playerY, 0, -1);
         camera->target.z = *playerY;
+        *timerMovement = 0.;
+        return;
     }
-    if (IsKeyPressed(KEY_S)) {
-        movePlayer(grid, playerX, playerY, 0, 1);
-        camera->target.z = *playerY;
-    }
-    if (IsKeyPressed(KEY_A)) {
-        movePlayer(grid, playerX, playerY, -1, 0);
-        camera->target.x = *playerX;
-    }
-    if (IsKeyPressed(KEY_D)) {
+    if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
         movePlayer(grid, playerX, playerY, 1, 0);
         camera->target.x = *playerX;
+        *timerMovement = 0.;
+        return;
+    }
+    if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+        movePlayer(grid, playerX, playerY, 0, 1);
+        camera->target.z = *playerY;
+        *timerMovement = 0.;
+        return;
+    }
+    if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
+        movePlayer(grid, playerX, playerY, -1, 0);
+        camera->target.x = *playerX;
+        *timerMovement = 0.;
+        return;
     }
 }
