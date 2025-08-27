@@ -15,6 +15,7 @@ typedef struct {
     Model *eastBridge;
     Model *southBridge;
     Model *westBridge;
+    Model *bridgeCenter;
     Model *water;
     int waterModelAngle;
 } ModelGroup;

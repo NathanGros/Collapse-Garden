@@ -81,15 +81,8 @@ void collapseTile(Grid *grid, int posX, int posY) {
                 tile->south = makeRandomConnection();
             if (!foundWest)
                 tile->west = makeRandomConnection();
-            Model *bridgeModels = getBridgeModels();
-            if (tile->north.bridge)
-                tile->modelGroup.northBridge = &bridgeModels[0];
-            if (tile->east.bridge)
-                tile->modelGroup.eastBridge = &bridgeModels[0];
-            if (tile->south.bridge)
-                tile->modelGroup.southBridge = &bridgeModels[0];
-            if (tile->west.bridge)
-                tile->modelGroup.westBridge = &bridgeModels[0];
+            assignBridgeModels(tile);
+            assignBridgeCenterModel(tile);
             assignWaterModel(tile);
             return;
         }

@@ -31,7 +31,7 @@ int main() {
     float playerXRender = playerXPrev;
     float playerYRender = playerYPrev;
     bool playerIsMoving = false;
-    float circleOverlayRadius = min(GetScreenHeight() / 6., GetScreenWidth() / 6.);
+    float circleOverlayRadius = GetScreenHeight() / 6.;
     loadModels();
 
     // Camera
@@ -61,7 +61,7 @@ int main() {
         if (IsWindowResized()) {
             screenWidth = GetScreenWidth();
             screenHeight = GetScreenHeight();
-            circleOverlayRadius = min(GetScreenHeight() / 6., GetScreenWidth() / 6.);
+            circleOverlayRadius = GetScreenHeight() / 6.;
         }
 
         timerCollapse += GetFrameTime();
@@ -74,12 +74,12 @@ int main() {
         }
 
         if (timerMovement >= 0.5) {
-            playerXRender = (float) playerX;
-            playerYRender = (float) playerY;
-            camera.target.x = playerXRender;
-            camera.target.z = playerYRender;
             playerXPrev = (float) playerX;
             playerYPrev = (float) playerY;
+            playerXRender = playerXPrev;
+            playerYRender = playerYPrev;
+            camera.target.x = playerXRender;
+            camera.target.z = playerYRender;
             executeControls(grid, &playerX, &playerY, &timerMovement);
             playerXRender = (float) playerXPrev;
             playerYRender = (float) playerYPrev;

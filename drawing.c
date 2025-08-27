@@ -39,8 +39,8 @@ void drawTile(Tile *tile) {
         tile->east.bridge ||
         tile->south.bridge ||
         tile->west.bridge) {
-        Model *bridgeCenterModels = getBridgeCenterModels();
-        DrawModelEx(bridgeCenterModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
+        Model *bridgeCenterModel = tile->modelGroup.bridgeCenter;
+        DrawModelEx(*bridgeCenterModel, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
     }
     // Draw water
     Model *waterModel = tile->modelGroup.water;

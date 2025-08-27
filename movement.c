@@ -8,12 +8,9 @@ void updateCamera(Camera3D *camera, float *targetDistance) {
     if (*targetDistance >= 70.) *targetDistance = 70.;
 
     // camera position
-    int screenWidth = GetScreenWidth();
-    int screenHeight = GetScreenHeight();
     float pi = 3.141592;
     float verticalAngle = pi / 3.;
     float horizontalAngle = pi / 2.;
-    if (screenHeight > screenWidth) horizontalAngle = pi;
     camera->position.x = camera->target.x + *targetDistance * cos(horizontalAngle) * cos(verticalAngle);
     camera->position.y = camera->target.y + *targetDistance * sin(verticalAngle);
     camera->position.z = camera->target.z + *targetDistance * sin(horizontalAngle) * cos(verticalAngle);

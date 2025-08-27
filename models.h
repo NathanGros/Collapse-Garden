@@ -16,6 +16,8 @@ Model *getWaterEndModels();
 Model *getWaterNoneModels();
 Model *getCloudModels();
 Model *getPlayerModels();
+void assignBridgeModels(Tile *tile);
+void assignBridgeCenterModel(Tile *tile);
 void assignWaterModel(Tile *tile);
 
 #endif

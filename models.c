@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define NB_BRIDGE_MODELS 1
-#define NB_BRIDGE_CENTER_MODELS 1
+#define NB_BRIDGE_CENTER_MODELS 2
 #define NB_WATER_X_MODELS 1
 #define NB_WATER_U_MODELS 1
 #define NB_WATER_L_MODELS 1
@@ -234,6 +234,21 @@ void unloadModels() {
     unloadPlayerModels();
 }
 
+void assignBridgeModels(Tile *tile) {
+    if (tile->north.bridge)
+        tile->modelGroup.northBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
+    if (tile->east.bridge)
+        tile->modelGroup.eastBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
+    if (tile->south.bridge)
+        tile->modelGroup.southBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
+    if (tile->west.bridge)
+        tile->modelGroup.westBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
+}
+
+void assignBridgeCenterModel(Tile *tile) {
+    tile->modelGroup.bridgeCenter = &bridgeCenterModels[rand() % NB_BRIDGE_CENTER_MODELS];
+}
+
 void assignWaterModel(Tile *tile) {
     bool northWater = tile->north.water;
     bool eastWater = tile->east.water;
@@ -245,15 +260,15 @@ void assignWaterModel(Tile *tile) {
     if (southWater) nbWater++;
     if (westWater) nbWater++;
     if (nbWater == 4) {
-        tile->modelGroup.water = &waterXModels[0];
+        tile->modelGroup.water = &waterXModels[rand() % NB_WATER_X_MODELS];
         tile->modelGroup.waterModelAngle = rand() % 4 * 90;
     }
     else if (nbWater == 0 ) {
-        tile->modelGroup.water = &waterNoneModels[0];
+        tile->modelGroup.water = &waterNoneModels[rand() % NB_WATER_NONE_MODELS];
         tile->modelGroup.waterModelAngle = rand() % 4 * 90;
     }
     else if (nbWater == 3) {
-        tile->modelGroup.water = &waterUModels[0];
+        tile->modelGroup.water = &waterUModels[rand() % NB_WATER_U_MODELS];
         if (!northWater) {
             tile->modelGroup.waterModelAngle = 180;
             return;
@@ -273,15 +288,15 @@ void assignWaterModel(Tile *tile) {
     }
     else if (nbWater == 2) {
         if (northWater && southWater) {
-            tile->modelGroup.water = &waterIModels[0];
+            tile->modelGroup.water = &waterIModels[rand() % NB_WATER_I_MODELS];
             tile->modelGroup.waterModelAngle = rand() % 2 * 180 + 90;
         }
         else if (eastWater && westWater) {
-            tile->modelGroup.water = &waterIModels[0];
+            tile->modelGroup.water = &waterIModels[rand() % NB_WATER_I_MODELS];
             tile->modelGroup.waterModelAngle = rand() % 2 * 180;
         }
         else {
-            tile->modelGroup.water = &waterLModels[0];
+            tile->modelGroup.water = &waterLModels[rand() % NB_WATER_L_MODELS];
             if (northWater && eastWater) {
                 tile->modelGroup.waterModelAngle = 0;
                 return;
@@ -301,7 +316,7 @@ void assignWaterModel(Tile *tile) {
         }
     }
     else if (nbWater == 1) {
-        tile->modelGroup.water = &waterEndModels[0];
+        tile->modelGroup.water = &waterEndModels[rand() % NB_WATER_END_MODELS];
         if (northWater) {
             tile->modelGroup.waterModelAngle = 0;
             return;
@@ -320,7 +335,6 @@ void assignWaterModel(Tile *tile) {
         }
     }
     else {
-        tile->modelGroup.water = &waterNoneModels[0];
-        tile->modelGroup.waterModelAngle = rand() % 4 * 90;
+        printf("Invalid Water tile\n");
     }
 }
