@@ -1,6 +1,7 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef STRUCTURES_H
+#define STRUCTURES_H
 
+#include <raylib.h>
 #include <stdbool.h>
 
 // Structs
@@ -10,6 +11,17 @@ typedef struct {
 } Connection;
 
 typedef struct {
+    bool hasNorthBridge;
+    bool hasEastBridge;
+    bool hasSouthBridge;
+    bool hasWestBridge;
+    Model *northBridge;
+    Model *eastBridge;
+    Model *southBridge;
+    Model *westBridge;
+} ModelGroup;
+
+typedef struct {
     int posX;
     int posY;
     bool collapsed;
@@ -17,6 +29,7 @@ typedef struct {
     Connection east;
     Connection south;
     Connection west;
+    ModelGroup modelGroup;
 } Tile;
 
 typedef struct {
@@ -28,7 +41,6 @@ typedef struct {
     Tile **tiles;
 } Grid;
 
-// Functions
 Connection makeConnection();
 
 Tile *makeTile();

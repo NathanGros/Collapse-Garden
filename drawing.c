@@ -1,4 +1,6 @@
 #include "drawing.h"
+#include "models.h"
+#include <raylib.h>
 
 void windowSetup(Color backgroundColor) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -9,34 +11,48 @@ void windowSetup(Color backgroundColor) {
 
 void drawTile(Tile *tile) {
     Vector3 pos = (Vector3){tile->posX, 0., tile->posY};
+    // DrawCube(pos, 1., 1., 1., GREEN);
     if (!tile->collapsed) {
-        DrawCube(pos, 1., 1., 1., RAYWHITE);
+        Model *cloudModels = getCloudModels();
+        DrawModelEx(cloudModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
         return;
     }
-    DrawCube(pos, 1., 1., 1., GREEN);
+    if (tile->modelGroup.hasNorthBridge) {
+        Model *northBridgeModel = tile->modelGroup.northBridge;
+        DrawModelEx(*northBridgeModel, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
+    }
+    if (tile->modelGroup.hasEastBridge) {
+        Model *eastBridgeModel = tile->modelGroup.eastBridge;
+        DrawModelEx(*eastBridgeModel, pos, (Vector3) {0, 1, 0}, -90, (Vector3) {1, 1, 1}, WHITE);
+    }
+    if (tile->modelGroup.hasSouthBridge) {
+        Model *southBridgeModel = tile->modelGroup.southBridge;
+        DrawModelEx(*southBridgeModel, pos, (Vector3) {0, 1, 0}, 180, (Vector3) {1, 1, 1}, WHITE);
+    }
+    if (tile->modelGroup.hasWestBridge) {
+        Model *westBridgeModel = tile->modelGroup.westBridge;
+        DrawModelEx(*westBridgeModel, pos, (Vector3) {0, 1, 0}, 90, (Vector3) {1, 1, 1}, WHITE);
+    }
+    if (
+        tile->modelGroup.hasNorthBridge ||
+        tile->modelGroup.hasEastBridge ||
+        tile->modelGroup.hasSouthBridge ||
+        tile->modelGroup.hasWestBridge) {
+        Model *bridgeCenterModels = getBridgeCenterModels();
+        DrawModelEx(bridgeCenterModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
+    }
+
     if (tile->north.water == true) {
-        DrawLine3D((Vector3){tile->posX, 0.6, tile->posY - 0.5}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+        DrawLine3D((Vector3){tile->posX, 0, tile->posY - 0.5}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
     }
     if (tile->east.water == true) {
-        DrawLine3D((Vector3){tile->posX + 0.5, 0.6, tile->posY}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+        DrawLine3D((Vector3){tile->posX + 0.5, 0, tile->posY}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
     }
     if (tile->south.water == true) {
-        DrawLine3D((Vector3){tile->posX, 0.6, tile->posY + 0.5}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
+        DrawLine3D((Vector3){tile->posX, 0, tile->posY + 0.5}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
     }
     if (tile->west.water == true) {
-        DrawLine3D((Vector3){tile->posX - 0.5, 0.6, tile->posY}, (Vector3){tile->posX, 0.6, tile->posY}, BLUE);
-    }
-    if (tile->north.bridge == true) {
-        DrawLine3D((Vector3){tile->posX, 0.8, tile->posY - 0.5}, (Vector3){tile->posX, 0.8, tile->posY}, RED);
-    }
-    if (tile->east.bridge == true) {
-        DrawLine3D((Vector3){tile->posX + 0.5, 0.8, tile->posY}, (Vector3){tile->posX, 0.8, tile->posY}, RED);
-    }
-    if (tile->south.bridge == true) {
-        DrawLine3D((Vector3){tile->posX, 0.8, tile->posY + 0.5}, (Vector3){tile->posX, 0.8, tile->posY}, RED);
-    }
-    if (tile->west.bridge == true) {
-        DrawLine3D((Vector3){tile->posX - 0.5, 0.8, tile->posY}, (Vector3){tile->posX, 0.8, tile->posY}, RED);
+        DrawLine3D((Vector3){tile->posX - 0.5, 0, tile->posY}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
     }
 }
 
@@ -47,9 +63,8 @@ void drawGrid(Grid *grid) {
 }
 
 void drawPlayer(int playerX, int playerY) {
-    Vector3 playerPos = (Vector3) {(float) playerX, 1., (float) playerY};
-    DrawCube(playerPos, 0.2, 0.2, 0.2, YELLOW);
-    DrawCubeWires(playerPos, 0.2, 0.2, 0.2, BLACK);
+    Vector3 playerPos = (Vector3) {(float) playerX, 0., (float) playerY};
+    DrawModelEx(*getPlayerModels(), playerPos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
 }
 
 void drawCircleOverlay(float circleOverlayRadius) {

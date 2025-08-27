@@ -1,7 +1,7 @@
 #ifndef DRAWING_H
 #define DRAWING_H
 
-#include "types.h"
+#include "structures.h"
 #include <raylib.h>
 
 void windowSetup(Color backgroundColor);

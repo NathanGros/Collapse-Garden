@@ -1,4 +1,5 @@
-#include "types.h"
+#include "structures.h"
+#include "models.h"
 #include "backend.h"
 #include "movement.h"
 #include "drawing.h"
@@ -21,6 +22,7 @@ int main() {
     int playerX = GRID_WIDTH / 2;
     int playerY = GRID_HEIGHT / 2;
     float circleOverlayRadius = GetScreenHeight() / 4.;
+    loadModels();
 
     // Camera
     float targetDistance = 35.;
@@ -55,7 +57,7 @@ int main() {
         timerCircleOverlay += GetFrameTime();
         timerMovement += GetFrameTime();
 
-        if (timerCollapse >= 0.01 && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        if (timerCollapse >= 0.02 && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             collapseOneTile(grid);
             timerCollapse = 0.;
         }
@@ -90,6 +92,7 @@ int main() {
             drawCircleOverlay(circleOverlayRadius);
         EndDrawing();
     }
+    unloadModels();
     CloseWindow();
 
     // De-init

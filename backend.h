@@ -1,7 +1,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
-#include "types.h"
+#include "structures.h"
 #include <raylib.h>
 
 void addTile(Grid *grid, Tile *tile);

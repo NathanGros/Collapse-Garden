@@ -1,5 +1,6 @@
 #include "backend.h"
-#include "types.h"
+#include "structures.h"
+#include "models.h"
 #include <raylib.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -80,6 +81,19 @@ void collapseTile(Grid *grid, int posX, int posY) {
                 tile->south = makeRandomConnection();
             if (!foundWest)
                 tile->west = makeRandomConnection();
+            tile->modelGroup.hasNorthBridge = tile->north.bridge;
+            tile->modelGroup.hasEastBridge = tile->east.bridge;
+            tile->modelGroup.hasSouthBridge = tile->south.bridge;
+            tile->modelGroup.hasWestBridge = tile->west.bridge;
+            Model *bridgeModels = getBridgeModels();
+            if (tile->modelGroup.hasNorthBridge)
+                tile->modelGroup.northBridge = &bridgeModels[0];
+            if (tile->modelGroup.hasEastBridge)
+                tile->modelGroup.eastBridge = &bridgeModels[0];
+            if (tile->modelGroup.hasSouthBridge)
+                tile->modelGroup.southBridge = &bridgeModels[0];
+            if (tile->modelGroup.hasWestBridge)
+                tile->modelGroup.westBridge = &bridgeModels[0];
             return;
         }
     }
@@ -90,6 +104,10 @@ void uncollapseTile(Grid *grid, int posX, int posY) {
         Tile *tile = grid->tiles[i];
         if (tile->posX == posX && tile->posY == posY) {
             tile->collapsed = false;
+            tile->modelGroup.hasNorthBridge = false;
+            tile->modelGroup.hasEastBridge = false;
+            tile->modelGroup.hasSouthBridge = false;
+            tile->modelGroup.hasWestBridge = false;
             return;
         }
     }

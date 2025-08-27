@@ -19,7 +19,7 @@ void updateCamera(Camera3D *camera, float *targetDistance) {
     camera->position.z = camera->target.z + *targetDistance * sin(horizontalAngle) * cos(verticalAngle);
 }
 
-void movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
+bool movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
     int nextTileIndex = -1;
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];
@@ -29,9 +29,9 @@ void movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
     }
     // Don't move if the next tile is not collapsed
     if (nextTileIndex == -1)
-        return;
+        return false;
     if (!grid->tiles[nextTileIndex]->collapsed)
-        return;
+        return false;
     int currentTileIndex = -1;
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];
@@ -43,22 +43,22 @@ void movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
     // North
     if (moveX == 0 && moveY == -1) {
         if (!grid->tiles[currentTileIndex]->north.bridge)
-            return;
+            return false;
     }
     // East
     if (moveX == 1 && moveY == 0) {
         if (!grid->tiles[currentTileIndex]->east.bridge)
-            return;
+            return false;
     }
     // South
     if (moveX == 0 && moveY == 1) {
         if (!grid->tiles[currentTileIndex]->south.bridge)
-            return;
+            return false;
     }
     // West
     if (moveX == -1 && moveY == 0) {
         if (!grid->tiles[currentTileIndex]->west.bridge)
-            return;
+            return false;
     }
     *playerX += moveX;
     *playerY += moveY;
@@ -115,31 +115,36 @@ void movePlayer(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
             addTile(grid, newTile);
         }
     }
+    return true;
 }
 
 void executeControls(Grid *grid, int *playerX, int *playerY, Camera3D *camera, float *timerMovement) {
     if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
-        movePlayer(grid, playerX, playerY, 0, -1);
-        camera->target.z = *playerY;
-        *timerMovement = 0.;
-        return;
+        if (movePlayer(grid, playerX, playerY, 0, -1)) {
+            camera->target.z = *playerY;
+            *timerMovement = 0.;
+            return;
+        }
     }
     if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
-        movePlayer(grid, playerX, playerY, 1, 0);
-        camera->target.x = *playerX;
-        *timerMovement = 0.;
-        return;
+        if (movePlayer(grid, playerX, playerY, 1, 0)) {
+            camera->target.x = *playerX;
+            *timerMovement = 0.;
+            return;
+        }
     }
     if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
-        movePlayer(grid, playerX, playerY, 0, 1);
-        camera->target.z = *playerY;
-        *timerMovement = 0.;
-        return;
+        if (movePlayer(grid, playerX, playerY, 0, 1)) {
+            camera->target.z = *playerY;
+            *timerMovement = 0.;
+            return;
+        }
     }
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
-        movePlayer(grid, playerX, playerY, -1, 0);
-        camera->target.x = *playerX;
-        *timerMovement = 0.;
-        return;
+        if (movePlayer(grid, playerX, playerY, -1, 0)) {
+            camera->target.x = *playerX;
+            *timerMovement = 0.;
+            return;
+        }
     }
 }

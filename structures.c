@@ -1,4 +1,4 @@
-#include "types.h"
+#include "structures.h"
 #include <stdlib.h>
 
 Connection makeConnection() {
@@ -6,6 +6,15 @@ Connection makeConnection() {
     connection.water = false;
     connection.bridge = false;
     return connection;
+}
+
+ModelGroup makeModelGroup() {
+    ModelGroup modelGroup;
+    modelGroup.hasNorthBridge = false;
+    modelGroup.hasEastBridge = false;
+    modelGroup.hasSouthBridge = false;
+    modelGroup.hasWestBridge = false;
+    return modelGroup;
 }
 
 Tile *makeTile() {
@@ -17,6 +26,7 @@ Tile *makeTile() {
     tile->east = makeConnection();
     tile->south = makeConnection();
     tile->west = makeConnection();
+    tile->modelGroup = makeModelGroup();
     return tile;
 }
 
