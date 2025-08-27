@@ -39,6 +39,27 @@ Connection makeRandomConnection() {
     return connection;
 }
 
+void collapsePlayerTile(Grid *grid, int playerX, int playerY) {
+    for (int i = 0; i < grid->nbTiles; i++) {
+        Tile *tile = grid->tiles[i];
+        if (tile->posX == playerX && tile->posY == playerY) {
+            tile->collapsed = true;
+            tile->north = makeRandomConnection();
+            tile->east = makeRandomConnection();
+            tile->south = makeRandomConnection();
+            tile->west = makeRandomConnection();
+            tile->north.bridge = true;
+            tile->east.bridge = true;
+            tile->south.bridge = true;
+            tile->west.bridge = true;
+            assignBridgeModels(tile);
+            assignBridgeCenterModel(tile);
+            assignWaterModel(tile);
+            return;
+        }
+    }
+}
+
 void collapseTile(Grid *grid, int posX, int posY) {
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];

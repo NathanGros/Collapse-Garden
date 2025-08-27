@@ -16,6 +16,14 @@ void updateCamera(Camera3D *camera, float *targetDistance) {
     camera->position.z = camera->target.z + *targetDistance * sin(horizontalAngle) * cos(verticalAngle);
 }
 
+void updateLightCamera(Camera3D *lightCamera, float playerX, float playerY) {
+    lightCamera->position.x = playerX - 20.;
+    lightCamera->position.y = 30.;
+    lightCamera->position.z = playerY - 20.;
+    lightCamera->target.x = playerX;
+    lightCamera->target.z = playerY;
+}
+
 bool canPlayerMove(Grid *grid, int *playerX, int *playerY, int moveX, int moveY) {
     int nextTileIndex = -1;
     for (int i = 0; i < grid->nbTiles; i++) {

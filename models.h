@@ -4,7 +4,7 @@
 #include "structures.h"
 #include <raylib.h>
 
-void loadModels();
+void loadModels(Shader shadowShader);
 void unloadModels();
 Model *getBridgeModels();
 Model *getBridgeCenterModels();

@@ -68,11 +68,12 @@ Model *getPlayerModels() {
 }
 
 // Loading and unloading
-void loadBridgeModels() {
+void loadBridgeModels(Shader shadowShader) {
     for (int i = 0; i < NB_BRIDGE_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/bridges/bridge_%d.obj", i + 1);
         bridgeModels[i] = LoadModel(modelName);
+        bridgeModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -82,11 +83,12 @@ void unloadBridgeModels() {
     }
 }
 
-void loadBridgeCenterModels() {
+void loadBridgeCenterModels(Shader shadowShader) {
     for (int i = 0; i < NB_BRIDGE_CENTER_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/bridge_centers/bridge_center_%d.obj", i + 1);
         bridgeCenterModels[i] = LoadModel(modelName);
+        bridgeCenterModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -96,11 +98,12 @@ void unloadBridgeCenterModels() {
     }
 }
 
-void loadWaterXModels() {
+void loadWaterXModels(Shader shadowShader) {
     for (int i = 0; i < NB_WATER_X_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/water/water_x/water_x_%d.obj", i + 1);
         waterXModels[i] = LoadModel(modelName);
+        waterXModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -110,11 +113,12 @@ void unloadWaterXModels() {
     }
 }
 
-void loadWaterUModels() {
+void loadWaterUModels(Shader shadowShader) {
     for (int i = 0; i < NB_WATER_U_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/water/water_u/water_u_%d.obj", i + 1);
         waterUModels[i] = LoadModel(modelName);
+        waterUModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -124,11 +128,12 @@ void unloadWaterUModels() {
     }
 }
 
-void loadWaterLModels() {
+void loadWaterLModels(Shader shadowShader) {
     for (int i = 0; i < NB_WATER_L_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/water/water_l/water_l_%d.obj", i + 1);
         waterLModels[i] = LoadModel(modelName);
+        waterLModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -138,11 +143,12 @@ void unloadWaterLModels() {
     }
 }
 
-void loadWaterIModels() {
+void loadWaterIModels(Shader shadowShader) {
     for (int i = 0; i < NB_WATER_I_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/water/water_i/water_i_%d.obj", i + 1);
         waterIModels[i] = LoadModel(modelName);
+        waterIModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -152,11 +158,12 @@ void unloadWaterIModels() {
     }
 }
 
-void loadWaterEndModels() {
+void loadWaterEndModels(Shader shadowShader) {
     for (int i = 0; i < NB_WATER_END_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/water/water_end/water_end_%d.obj", i + 1);
         waterEndModels[i] = LoadModel(modelName);
+        waterEndModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -166,11 +173,12 @@ void unloadWaterEndModels() {
     }
 }
 
-void loadWaterNoneModels() {
+void loadWaterNoneModels(Shader shadowShader) {
     for (int i = 0; i < NB_WATER_NONE_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/water/water_none/water_none_%d.obj", i + 1);
         waterNoneModels[i] = LoadModel(modelName);
+        waterNoneModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -180,11 +188,12 @@ void unloadWaterNoneModels() {
     }
 }
 
-void loadCloudModels() {
+void loadCloudModels(Shader shadowShader) {
     for (int i = 0; i < NB_CLOUD_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/clouds/cloud_%d.obj", i + 1);
         cloudModels[i] = LoadModel(modelName);
+        cloudModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -194,11 +203,12 @@ void unloadCloudModels() {
     }
 }
 
-void loadPlayerModels() {
+void loadPlayerModels(Shader shadowShader) {
     for (int i = 0; i < NB_PLAYER_MODELS; i++) {
         char modelName[100];
         sprintf(modelName, "assets/players/player_%d.obj", i + 1);
         playerModels[i] = LoadModel(modelName);
+        playerModels[i].materials[0].shader = shadowShader;
     }
 }
 
@@ -208,17 +218,17 @@ void unloadPlayerModels() {
     }
 }
 
-void loadModels() {
-    loadBridgeModels();
-    loadBridgeCenterModels();
-    loadWaterXModels();
-    loadWaterUModels();
-    loadWaterLModels();
-    loadWaterIModels();
-    loadWaterEndModels();
-    loadWaterNoneModels();
-    loadCloudModels();
-    loadPlayerModels();
+void loadModels(Shader shadowShader) {
+    loadBridgeModels(shadowShader);
+    loadBridgeCenterModels(shadowShader);
+    loadWaterXModels(shadowShader);
+    loadWaterUModels(shadowShader);
+    loadWaterLModels(shadowShader);
+    loadWaterIModels(shadowShader);
+    loadWaterEndModels(shadowShader);
+    loadWaterNoneModels(shadowShader);
+    loadCloudModels(shadowShader);
+    loadPlayerModels(shadowShader);
 }
 
 void unloadModels() {
