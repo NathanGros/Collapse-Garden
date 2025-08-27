@@ -62,8 +62,8 @@ void drawGrid(Grid *grid) {
     }
 }
 
-void drawPlayer(int playerX, int playerY) {
-    Vector3 playerPos = (Vector3) {(float) playerX, 0., (float) playerY};
+void drawPlayer(float playerXMove, float playerYMove) {
+    Vector3 playerPos = (Vector3) {playerXMove, 0., playerYMove};
     DrawModelEx(*getPlayerModels(), playerPos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
 }
 

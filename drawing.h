@@ -6,7 +6,7 @@
 
 void windowSetup(Color backgroundColor);
 void drawGrid(Grid *grid);
-void drawPlayer(int playerX, int playerY);
+void drawPlayer(float playerXMove, float playerYMove);
 void drawCircleOverlay(float circleOverlayRadius);
 
 #endif
