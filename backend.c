@@ -81,19 +81,16 @@ void collapseTile(Grid *grid, int posX, int posY) {
                 tile->south = makeRandomConnection();
             if (!foundWest)
                 tile->west = makeRandomConnection();
-            tile->modelGroup.hasNorthBridge = tile->north.bridge;
-            tile->modelGroup.hasEastBridge = tile->east.bridge;
-            tile->modelGroup.hasSouthBridge = tile->south.bridge;
-            tile->modelGroup.hasWestBridge = tile->west.bridge;
             Model *bridgeModels = getBridgeModels();
-            if (tile->modelGroup.hasNorthBridge)
+            if (tile->north.bridge)
                 tile->modelGroup.northBridge = &bridgeModels[0];
-            if (tile->modelGroup.hasEastBridge)
+            if (tile->east.bridge)
                 tile->modelGroup.eastBridge = &bridgeModels[0];
-            if (tile->modelGroup.hasSouthBridge)
+            if (tile->south.bridge)
                 tile->modelGroup.southBridge = &bridgeModels[0];
-            if (tile->modelGroup.hasWestBridge)
+            if (tile->west.bridge)
                 tile->modelGroup.westBridge = &bridgeModels[0];
+            assignWaterModel(tile);
             return;
         }
     }
@@ -104,10 +101,15 @@ void uncollapseTile(Grid *grid, int posX, int posY) {
         Tile *tile = grid->tiles[i];
         if (tile->posX == posX && tile->posY == posY) {
             tile->collapsed = false;
-            tile->modelGroup.hasNorthBridge = false;
-            tile->modelGroup.hasEastBridge = false;
-            tile->modelGroup.hasSouthBridge = false;
-            tile->modelGroup.hasWestBridge = false;
+            tile->north.bridge = false;
+            tile->north.water = false;
+            tile->east.bridge = false;
+            tile->east.water = false;
+            tile->south.bridge = false;
+            tile->south.water = false;
+            tile->west.bridge = false;
+            tile->west.water = false;
+            tile->modelGroup.waterModelAngle = 0;
             return;
         }
     }

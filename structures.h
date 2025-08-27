@@ -11,14 +11,12 @@ typedef struct {
 } Connection;
 
 typedef struct {
-    bool hasNorthBridge;
-    bool hasEastBridge;
-    bool hasSouthBridge;
-    bool hasWestBridge;
     Model *northBridge;
     Model *eastBridge;
     Model *southBridge;
     Model *westBridge;
+    Model *water;
+    int waterModelAngle;
 } ModelGroup;
 
 typedef struct {

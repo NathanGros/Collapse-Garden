@@ -12,48 +12,39 @@ void windowSetup(Color backgroundColor) {
 void drawTile(Tile *tile) {
     Vector3 pos = (Vector3){tile->posX, 0., tile->posY};
     // DrawCube(pos, 1., 1., 1., GREEN);
+    // Draw bridges
     if (!tile->collapsed) {
         Model *cloudModels = getCloudModels();
         DrawModelEx(cloudModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
         return;
     }
-    if (tile->modelGroup.hasNorthBridge) {
+    if (tile->north.bridge) {
         Model *northBridgeModel = tile->modelGroup.northBridge;
         DrawModelEx(*northBridgeModel, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
     }
-    if (tile->modelGroup.hasEastBridge) {
+    if (tile->east.bridge) {
         Model *eastBridgeModel = tile->modelGroup.eastBridge;
         DrawModelEx(*eastBridgeModel, pos, (Vector3) {0, 1, 0}, -90, (Vector3) {1, 1, 1}, WHITE);
     }
-    if (tile->modelGroup.hasSouthBridge) {
+    if (tile->south.bridge) {
         Model *southBridgeModel = tile->modelGroup.southBridge;
         DrawModelEx(*southBridgeModel, pos, (Vector3) {0, 1, 0}, 180, (Vector3) {1, 1, 1}, WHITE);
     }
-    if (tile->modelGroup.hasWestBridge) {
+    if (tile->west.bridge) {
         Model *westBridgeModel = tile->modelGroup.westBridge;
         DrawModelEx(*westBridgeModel, pos, (Vector3) {0, 1, 0}, 90, (Vector3) {1, 1, 1}, WHITE);
     }
     if (
-        tile->modelGroup.hasNorthBridge ||
-        tile->modelGroup.hasEastBridge ||
-        tile->modelGroup.hasSouthBridge ||
-        tile->modelGroup.hasWestBridge) {
+        tile->north.bridge ||
+        tile->east.bridge ||
+        tile->south.bridge ||
+        tile->west.bridge) {
         Model *bridgeCenterModels = getBridgeCenterModels();
         DrawModelEx(bridgeCenterModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
     }
-
-    if (tile->north.water == true) {
-        DrawLine3D((Vector3){tile->posX, 0, tile->posY - 0.5}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
-    }
-    if (tile->east.water == true) {
-        DrawLine3D((Vector3){tile->posX + 0.5, 0, tile->posY}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
-    }
-    if (tile->south.water == true) {
-        DrawLine3D((Vector3){tile->posX, 0, tile->posY + 0.5}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
-    }
-    if (tile->west.water == true) {
-        DrawLine3D((Vector3){tile->posX - 0.5, 0, tile->posY}, (Vector3){tile->posX, 0, tile->posY}, BLUE);
-    }
+    // Draw water
+    Model *waterModel = tile->modelGroup.water;
+    DrawModelEx(*waterModel, pos, (Vector3) {0, 1, 0}, tile->modelGroup.waterModelAngle, (Vector3) {1, 1, 1}, WHITE);
 }
 
 void drawGrid(Grid *grid) {

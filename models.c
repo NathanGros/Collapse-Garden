@@ -1,24 +1,62 @@
 #include "models.h"
 #include <raylib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define NB_BRIDGE_MODELS 1
 #define NB_BRIDGE_CENTER_MODELS 1
+#define NB_WATER_X_MODELS 1
+#define NB_WATER_U_MODELS 1
+#define NB_WATER_L_MODELS 1
+#define NB_WATER_I_MODELS 1
+#define NB_WATER_END_MODELS 1
+#define NB_WATER_NONE_MODELS 1
 #define NB_CLOUD_MODELS 1
 #define NB_PLAYER_MODELS 1
 
-// load all models
+// Models lists
 Model bridgeModels[NB_BRIDGE_MODELS];
 Model bridgeCenterModels[NB_BRIDGE_CENTER_MODELS];
+Model waterXModels[NB_WATER_X_MODELS];
+Model waterUModels[NB_WATER_U_MODELS];
+Model waterLModels[NB_WATER_L_MODELS];
+Model waterIModels[NB_WATER_I_MODELS];
+Model waterEndModels[NB_WATER_END_MODELS];
+Model waterNoneModels[NB_WATER_NONE_MODELS];
 Model cloudModels[NB_CLOUD_MODELS];
 Model playerModels[NB_PLAYER_MODELS];
 
+// Getters
 Model *getBridgeModels() {
     return bridgeModels;
 }
 
 Model *getBridgeCenterModels() {
     return bridgeCenterModels;
+}
+
+Model *getWaterXModels() {
+    return waterXModels;
+}
+
+Model *getWaterUModels() {
+    return waterUModels;
+}
+
+Model *getWaterLModels() {
+    return waterLModels;
+}
+
+Model *getWaterIModels() {
+    return waterIModels;
+}
+
+Model *getWaterEndModels() {
+    return waterEndModels;
+}
+
+Model *getWaterNoneModels() {
+    return waterNoneModels;
 }
 
 Model *getCloudModels() {
@@ -29,6 +67,7 @@ Model *getPlayerModels() {
     return playerModels;
 }
 
+// Loading and unloading
 void loadBridgeModels() {
     for (int i = 0; i < NB_BRIDGE_MODELS; i++) {
         char modelName[100];
@@ -54,6 +93,90 @@ void loadBridgeCenterModels() {
 void unloadBridgeCenterModels() {
     for (int i = 0; i < NB_BRIDGE_CENTER_MODELS; i++) {
         UnloadModel(bridgeCenterModels[i]);
+    }
+}
+
+void loadWaterXModels() {
+    for (int i = 0; i < NB_WATER_X_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/water/water_x/water_x_%d.obj", i + 1);
+        waterXModels[i] = LoadModel(modelName);
+    }
+}
+
+void unloadWaterXModels() {
+    for (int i = 0; i < NB_WATER_X_MODELS; i++) {
+        UnloadModel(waterXModels[i]);
+    }
+}
+
+void loadWaterUModels() {
+    for (int i = 0; i < NB_WATER_U_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/water/water_u/water_u_%d.obj", i + 1);
+        waterUModels[i] = LoadModel(modelName);
+    }
+}
+
+void unloadWaterUModels() {
+    for (int i = 0; i < NB_WATER_U_MODELS; i++) {
+        UnloadModel(waterUModels[i]);
+    }
+}
+
+void loadWaterLModels() {
+    for (int i = 0; i < NB_WATER_L_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/water/water_l/water_l_%d.obj", i + 1);
+        waterLModels[i] = LoadModel(modelName);
+    }
+}
+
+void unloadWaterLModels() {
+    for (int i = 0; i < NB_WATER_L_MODELS; i++) {
+        UnloadModel(waterLModels[i]);
+    }
+}
+
+void loadWaterIModels() {
+    for (int i = 0; i < NB_WATER_I_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/water/water_i/water_i_%d.obj", i + 1);
+        waterIModels[i] = LoadModel(modelName);
+    }
+}
+
+void unloadWaterIModels() {
+    for (int i = 0; i < NB_WATER_I_MODELS; i++) {
+        UnloadModel(waterIModels[i]);
+    }
+}
+
+void loadWaterEndModels() {
+    for (int i = 0; i < NB_WATER_END_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/water/water_end/water_end_%d.obj", i + 1);
+        waterEndModels[i] = LoadModel(modelName);
+    }
+}
+
+void unloadWaterEndModels() {
+    for (int i = 0; i < NB_WATER_END_MODELS; i++) {
+        UnloadModel(waterEndModels[i]);
+    }
+}
+
+void loadWaterNoneModels() {
+    for (int i = 0; i < NB_WATER_NONE_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/water/water_none/water_none_%d.obj", i + 1);
+        waterNoneModels[i] = LoadModel(modelName);
+    }
+}
+
+void unloadWaterNoneModels() {
+    for (int i = 0; i < NB_WATER_NONE_MODELS; i++) {
+        UnloadModel(waterNoneModels[i]);
     }
 }
 
@@ -88,6 +211,12 @@ void unloadPlayerModels() {
 void loadModels() {
     loadBridgeModels();
     loadBridgeCenterModels();
+    loadWaterXModels();
+    loadWaterUModels();
+    loadWaterLModels();
+    loadWaterIModels();
+    loadWaterEndModels();
+    loadWaterNoneModels();
     loadCloudModels();
     loadPlayerModels();
 }
@@ -95,6 +224,103 @@ void loadModels() {
 void unloadModels() {
     unloadBridgeModels();
     unloadBridgeCenterModels();
+    unloadWaterXModels();
+    unloadWaterUModels();
+    unloadWaterLModels();
+    unloadWaterIModels();
+    unloadWaterEndModels();
+    unloadWaterNoneModels();
     unloadCloudModels();
     unloadPlayerModels();
+}
+
+void assignWaterModel(Tile *tile) {
+    bool northWater = tile->north.water;
+    bool eastWater = tile->east.water;
+    bool southWater = tile->south.water;
+    bool westWater = tile->west.water;
+    int nbWater = 0;
+    if (northWater) nbWater++;
+    if (eastWater) nbWater++;
+    if (southWater) nbWater++;
+    if (westWater) nbWater++;
+    if (nbWater == 4) {
+        tile->modelGroup.water = &waterXModels[0];
+        tile->modelGroup.waterModelAngle = rand() % 4 * 90;
+    }
+    else if (nbWater == 0 ) {
+        tile->modelGroup.water = &waterNoneModels[0];
+        tile->modelGroup.waterModelAngle = rand() % 4 * 90;
+    }
+    else if (nbWater == 3) {
+        tile->modelGroup.water = &waterUModels[0];
+        if (!northWater) {
+            tile->modelGroup.waterModelAngle = 180;
+            return;
+        }
+        if (!eastWater) {
+            tile->modelGroup.waterModelAngle = 90;
+            return;
+        }
+        if (!southWater) {
+            tile->modelGroup.waterModelAngle = 0;
+            return;
+        }
+        if (!westWater) {
+            tile->modelGroup.waterModelAngle = -90;
+            return;
+        }
+    }
+    else if (nbWater == 2) {
+        if (northWater && southWater) {
+            tile->modelGroup.water = &waterIModels[0];
+            tile->modelGroup.waterModelAngle = rand() % 2 * 180 + 90;
+        }
+        else if (eastWater && westWater) {
+            tile->modelGroup.water = &waterIModels[0];
+            tile->modelGroup.waterModelAngle = rand() % 2 * 180;
+        }
+        else {
+            tile->modelGroup.water = &waterLModels[0];
+            if (northWater && eastWater) {
+                tile->modelGroup.waterModelAngle = 0;
+                return;
+            }
+            if (eastWater && southWater) {
+                tile->modelGroup.waterModelAngle = -90;
+                return;
+            }
+            if (southWater && westWater) {
+                tile->modelGroup.waterModelAngle = 180;
+                return;
+            }
+            if (westWater && northWater) {
+                tile->modelGroup.waterModelAngle = 90;
+                return;
+            }
+        }
+    }
+    else if (nbWater == 1) {
+        tile->modelGroup.water = &waterEndModels[0];
+        if (northWater) {
+            tile->modelGroup.waterModelAngle = 0;
+            return;
+        }
+        if (eastWater) {
+            tile->modelGroup.waterModelAngle = -90;
+            return;
+        }
+        if (southWater) {
+            tile->modelGroup.waterModelAngle = 180;
+            return;
+        }
+        if (westWater) {
+            tile->modelGroup.waterModelAngle = 90;
+            return;
+        }
+    }
+    else {
+        tile->modelGroup.water = &waterNoneModels[0];
+        tile->modelGroup.waterModelAngle = rand() % 4 * 90;
+    }
 }

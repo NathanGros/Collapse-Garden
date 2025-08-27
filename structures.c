@@ -10,10 +10,7 @@ Connection makeConnection() {
 
 ModelGroup makeModelGroup() {
     ModelGroup modelGroup;
-    modelGroup.hasNorthBridge = false;
-    modelGroup.hasEastBridge = false;
-    modelGroup.hasSouthBridge = false;
-    modelGroup.hasWestBridge = false;
+    modelGroup.waterModelAngle = 0;
     return modelGroup;
 }
 

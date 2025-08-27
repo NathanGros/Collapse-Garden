@@ -16,7 +16,7 @@ float min(float a, float b) {
 
 int main() {
     // Init
-    Color backgroundColor = (Color){0, 139, 255};
+    Color backgroundColor = (Color){255, 255, 255};
     windowSetup(backgroundColor);
     HideCursor();
     int screenWidth = GetScreenWidth();
