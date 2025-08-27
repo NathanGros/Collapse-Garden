@@ -74,6 +74,10 @@ int main() {
         }
 
         if (timerMovement >= 0.5) {
+            playerXRender = (float) playerX;
+            playerYRender = (float) playerY;
+            camera.target.x = playerXRender;
+            camera.target.z = playerYRender;
             playerXPrev = (float) playerX;
             playerYPrev = (float) playerY;
             executeControls(grid, &playerX, &playerY, &timerMovement);
