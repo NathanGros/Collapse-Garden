@@ -76,14 +76,14 @@ int main() {
     Shader shadowShader = LoadShader("shaders/shadows.vs", "shaders/shadows.fs");
     shadowShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shadowShader, "viewPos");
     Vector3 lightDir = Vector3Normalize((Vector3){ 0.35f, -1.0f, -0.35f });
-    Color lightColor = (Color) {230, 220, 200};
+    Color lightColor = (Color) {200, 190, 190};
     Vector4 lightColorNormalized = ColorNormalize(lightColor);
     int lightDirLoc = GetShaderLocation(shadowShader, "lightDir");
     int lightColLoc = GetShaderLocation(shadowShader, "lightColor");
     SetShaderValue(shadowShader, lightDirLoc, &lightDir, SHADER_UNIFORM_VEC3);
     SetShaderValue(shadowShader, lightColLoc, &lightColorNormalized, SHADER_UNIFORM_VEC4);
     int ambientLoc = GetShaderLocation(shadowShader, "ambient");
-    float ambient[4] = {2.0, 1.9, 1.7, 1.};
+    float ambient[4] = {4.0, 3.9, 3.9, 1.};
     SetShaderValue(shadowShader, ambientLoc, ambient, SHADER_UNIFORM_VEC4);
     int lightVPLoc = GetShaderLocation(shadowShader, "lightVP");
     int shadowMapLoc = GetShaderLocation(shadowShader, "shadowMap");
@@ -112,6 +112,7 @@ int main() {
     float timerCollapse = 0.;
     float timerCircleOverlay = 0.;
     float timerMovement = 0.;
+    float timerTileSound = 0.;
 
     // Grid
     Grid *grid = makeGrid(GRID_WIDTH, GRID_HEIGHT);
@@ -151,10 +152,16 @@ int main() {
         timerCollapse += GetFrameTime();
         timerCircleOverlay += GetFrameTime();
         timerMovement += GetFrameTime();
+        timerTileSound += GetFrameTime();
 
         if (!allCollapsed && timerCollapse >= 0.04 && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             collapseOneTile(grid);
-            PlaySound(soundPlaceTile);
+            if (timerTileSound >= 0.04) {
+                SetSoundPitch(soundPlaceTile, 0.8 + (float) (rand() % 40) / 100.);
+                SetSoundVolume(soundPlaceTile, 0.7 + (float) (rand() % 60) / 100.);
+                PlaySound(soundPlaceTile);
+                timerTileSound = 0;
+            }
             timerCollapse = 0.;
         }
 
@@ -192,7 +199,7 @@ int main() {
             mouseY = newMouseY;
         }
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            uncollapseMouseTiles(grid, camera, circleOverlayRadius, playerX, playerY, soundRemoveTile);
+            uncollapseMouseTiles(grid, camera, circleOverlayRadius, playerX, playerY, &timerTileSound, soundRemoveTile);
             allCollapsed = false;
             timerCircleOverlay = 0.;
         }

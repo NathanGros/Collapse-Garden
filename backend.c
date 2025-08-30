@@ -7,7 +7,7 @@
 
 #define LAND_PROBABILITY 0.5
 #define DECORATION_PROBABILITY 0.5
-#define PATH_PROBABILITY 0.2
+#define PATH_PROBABILITY 0.3
 
 bool randFromProbability(float probability) {
     return (rand() % 100 < 100 * probability);
@@ -182,7 +182,7 @@ void collapseOneTile(Grid *grid) {
     free(nbGridCollapsedNeighbors);
 }
 
-void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int playerX, int playerY, Sound soundRemoveTile) {
+void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int playerX, int playerY, float *timerTileSound, Sound soundRemoveTile) {
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];
         int tileX = tile->posX;
@@ -200,7 +200,11 @@ void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int p
                 }
             }
         }
-        if (flagRemovedTiles)
+        if (flagRemovedTiles && *timerTileSound >= 0.035) {
+            SetSoundPitch(soundRemoveTile, 0.9 + (float) (rand() % 20) / 100.);
+            SetSoundVolume(soundRemoveTile, 0.7 + (float) (rand() % 60) / 100.);
             PlaySound(soundRemoveTile);
+            *timerTileSound = 0;
+        }
     }
 }
