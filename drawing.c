@@ -9,48 +9,63 @@ void windowSetup(Color backgroundColor) {
     SetTargetFPS(60);
 }
 
+void drawFences(Grid *grid) {
+    for (int i = 0; i < grid->nbTiles; i++) {
+        Tile *tile = grid->tiles[i];
+        if (!tile->collapsed || !tile->land)
+            continue;
+        Vector3 pos = (Vector3){tile->posX, 0., tile->posY};
+        // North Fence
+        for (int j = 0; j < grid->nbTiles; j++) {
+            Tile *otherTile = grid->tiles[j];
+            if (!otherTile->collapsed || !otherTile->land || tile->path.north)
+                continue;
+            if (tile->posX == otherTile->posX && tile->posY - 1 == otherTile->posY) {
+                Model *fenceModel = tile->modelGroup.northFence;
+                DrawModelEx(*fenceModel, pos, (Vector3) {0, 1, 0}, 90, (Vector3) {1, 1, 1}, WHITE);
+            }
+        }
+        // East Fence
+        for (int j = 0; j < grid->nbTiles; j++) {
+            Tile *otherTile = grid->tiles[j];
+            if (!otherTile->collapsed || !otherTile->land || tile->path.east)
+                continue;
+            if (tile->posX + 1 == otherTile->posX && tile->posY == otherTile->posY) {
+                Model *fenceModel = tile->modelGroup.eastFence;
+                DrawModelEx(*fenceModel, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
+            }
+        }
+    }
+}
+
 void drawTile(Tile *tile) {
     Vector3 pos = (Vector3){tile->posX, 0., tile->posY};
-    // DrawCube(pos, 1., 1., 1., GREEN);
-    // Draw bridges
     if (!tile->collapsed) {
-        Model *cloudModels = getCloudModels();
-        DrawModelEx(cloudModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
+        // Model *cloudModels = getCloudModels();
+        // DrawModelEx(cloudModels[0], pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
         return;
     }
-    if (tile->north.bridge) {
-        Model *northBridgeModel = tile->modelGroup.northBridge;
-        DrawModelEx(*northBridgeModel, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
+    // Draw surface
+    Model *surfaceModel = tile->modelGroup.surface;
+    DrawModelEx(*surfaceModel, pos, (Vector3) {0, 1, 0}, tile->surfaceRotation, (Vector3) {1, 1, 1}, WHITE);
+    // Draw bridge
+    if (!tile->land) {
+        Model *bridgeModel = tile->modelGroup.bridge;
+        if (!tile->decoration && !tile->path.north && !tile->path.east && !tile->path.south && !tile->path.west)
+            return;
+        DrawModelEx(*bridgeModel, pos, (Vector3) {0, 1, 0}, tile->bridgeRotation, (Vector3) {1, 1, 1}, WHITE);
     }
-    if (tile->east.bridge) {
-        Model *eastBridgeModel = tile->modelGroup.eastBridge;
-        DrawModelEx(*eastBridgeModel, pos, (Vector3) {0, 1, 0}, -90, (Vector3) {1, 1, 1}, WHITE);
-    }
-    if (tile->south.bridge) {
-        Model *southBridgeModel = tile->modelGroup.southBridge;
-        DrawModelEx(*southBridgeModel, pos, (Vector3) {0, 1, 0}, 180, (Vector3) {1, 1, 1}, WHITE);
-    }
-    if (tile->west.bridge) {
-        Model *westBridgeModel = tile->modelGroup.westBridge;
-        DrawModelEx(*westBridgeModel, pos, (Vector3) {0, 1, 0}, 90, (Vector3) {1, 1, 1}, WHITE);
-    }
-    if (
-        tile->north.bridge ||
-        tile->east.bridge ||
-        tile->south.bridge ||
-        tile->west.bridge) {
-        Model *bridgeCenterModel = tile->modelGroup.bridgeCenter;
-        DrawModelEx(*bridgeCenterModel, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, WHITE);
-    }
-    // Draw water
-    Model *waterModel = tile->modelGroup.water;
-    DrawModelEx(*waterModel, pos, (Vector3) {0, 1, 0}, tile->modelGroup.waterModelAngle, (Vector3) {1, 1, 1}, WHITE);
 }
 
 void drawGrid(Grid *grid) {
     for (int i = 0; i < grid->nbTiles; i++) {
         drawTile(grid->tiles[i]);
     }
+}
+
+void drawGround(Color backgroundColor, Grid *grid, Model *ground) {
+    Vector3 pos = (Vector3) {grid->cornerPosX + grid->width / 2., 0., grid->cornerPosY + grid->height / 2.};
+    DrawModelEx(*ground, pos, (Vector3) {0, 1, 0}, 0, (Vector3) {1, 1, 1}, backgroundColor);
 }
 
 void drawPlayer(float playerXMove, float playerYMove) {

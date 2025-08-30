@@ -6,18 +6,20 @@
 
 void loadModels(Shader shadowShader);
 void unloadModels();
+Model *getLandModels();
+Model *getWaterModels();
 Model *getBridgeModels();
-Model *getBridgeCenterModels();
-Model *getWaterXModels();
-Model *getWaterUModels();
-Model *getWaterLModels();
-Model *getWaterIModels();
-Model *getWaterEndModels();
-Model *getWaterNoneModels();
+Model *getBridgeXModels();
+Model *getBridgeUModels();
+Model *getBridgeLModels();
+Model *getBridgeIModels();
+Model *getBridgeEndModels();
+Model *getBridgeNoneModels();
+Model *getFenceModels();
 Model *getCloudModels();
 Model *getPlayerModels();
-void assignBridgeModels(Tile *tile);
-void assignBridgeCenterModel(Tile *tile);
-void assignWaterModel(Tile *tile);
+void assignSurfaceModel(Tile *tile);
+void assignBridgeModel(Tile *tile);
+void assignFenceModels(Tile *tile);
 
 #endif

@@ -9,13 +9,9 @@
 #include <rlgl.h>
 #include <stdlib.h>
 
-#define GRID_WIDTH 13
-#define GRID_HEIGHT 9
+#define GRID_WIDTH 9
+#define GRID_HEIGHT 7
 #define SHADOWMAP_RESOLUTION 4096
-
-float min(float a, float b) {
-    return a < b ? a : b;
-}
 
 RenderTexture2D LoadShadowmapRenderTexture(int width, int height) {
     RenderTexture2D target = { 0 };
@@ -59,7 +55,7 @@ void UnloadShadowmapRenderTexture(RenderTexture2D target) {
 
 int main() {
     // Init
-    Color backgroundColor = (Color){255, 255, 255};
+    Color backgroundColor = (Color){242, 228, 207};
     windowSetup(backgroundColor);
     HideCursor();
     int screenWidth = GetScreenWidth();
@@ -97,12 +93,12 @@ int main() {
     loadModels(shadowShader);
 
     // Cameras
-    float targetDistance = 35.;
+    float targetDistance = 30.;
     Camera3D camera = {0};
     camera.position = (Vector3){0.0f, 0.0f, 0.0f};
     camera.target = (Vector3){6.0f, 0.0f, 4.0f};
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};
-    camera.fovy = 20.0f;
+    camera.fovy = 15.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
     Camera3D lightCamera = (Camera3D){ 0 };
@@ -120,6 +116,16 @@ int main() {
     // Grid
     Grid *grid = makeGrid(GRID_WIDTH, GRID_HEIGHT);
     collapsePlayerTile(grid,playerX, playerY);
+    bool allCollapsed = false;
+
+    // Ground
+    Model ground = LoadModelFromMesh(GenMeshCube(GRID_WIDTH + 20., 0., GRID_HEIGHT + 20.));
+    ground.materials[0].shader = shadowShader;
+
+    // Audio
+    InitAudioDevice();
+    Sound soundPlaceTile = LoadSound("assets/audio/place_tile.wav");
+    Sound soundRemoveTile = LoadSound("assets/audio/remove_tile.wav");
 
     // Loop
     while (!WindowShouldClose()) {
@@ -129,13 +135,26 @@ int main() {
             screenHeight = GetScreenHeight();
             circleOverlayRadius = GetScreenHeight() / 6.;
         }
+        
+        bool flagAllCollapsed = true;
+        if (!allCollapsed) {
+            for (int i = 0; i < grid->nbTiles; i++) {
+                if (!grid->tiles[i]->collapsed) {
+                    flagAllCollapsed = false;
+                    break;
+                }
+            }
+            if (flagAllCollapsed)
+                allCollapsed = true;
+        }
 
         timerCollapse += GetFrameTime();
         timerCircleOverlay += GetFrameTime();
         timerMovement += GetFrameTime();
 
-        if (timerCollapse >= 0.02 && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        if (!allCollapsed && timerCollapse >= 0.04 && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             collapseOneTile(grid);
+            PlaySound(soundPlaceTile);
             timerCollapse = 0.;
         }
 
@@ -152,6 +171,7 @@ int main() {
             playerYRender = (float) playerYPrev;
         }
         else { // moving
+            allCollapsed = false;
             float t = timerMovement / 0.5f;  // 0 → 1 over 0.5s
             playerXRender = playerXPrev + ((float) playerX - playerXPrev) * t;
             playerYRender = playerYPrev + ((float) playerY - playerYPrev) * t;
@@ -172,7 +192,8 @@ int main() {
             mouseY = newMouseY;
         }
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            uncollapseMouseTiles(grid, camera, circleOverlayRadius, playerX, playerY);
+            uncollapseMouseTiles(grid, camera, circleOverlayRadius, playerX, playerY, soundRemoveTile);
+            allCollapsed = false;
             timerCircleOverlay = 0.;
         }
 
@@ -186,7 +207,9 @@ int main() {
                 BeginMode3D(lightCamera);
                     lightView = rlGetMatrixModelview();
                     lightProj = rlGetMatrixProjection();
+                    drawGround(backgroundColor, grid, &ground);
                     drawGrid(grid);
+                    drawFences(grid);
                     drawPlayer(playerXRender, playerYRender);
                 EndMode3D();
             EndTextureMode();
@@ -201,7 +224,9 @@ int main() {
             rlSetUniform(shadowMapLoc, &slot, SHADER_UNIFORM_INT, 1);
 
             BeginMode3D(camera);
+                drawGround(backgroundColor, grid, &ground);
                 drawGrid(grid);
+                drawFences(grid);
                 drawPlayer(playerXRender, playerYRender);
             EndMode3D();
             if (timerCircleOverlay <= 2.)
@@ -209,6 +234,7 @@ int main() {
         EndDrawing();
     }
     // De-init
+    CloseAudioDevice();
     UnloadShader(shadowShader);
     unloadModels();
     UnloadShadowmapRenderTexture(shadowMap);

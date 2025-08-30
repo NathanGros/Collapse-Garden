@@ -1,16 +1,17 @@
 #include "structures.h"
 #include <stdlib.h>
 
-Connection makeConnection() {
-    Connection connection;
-    connection.water = false;
-    connection.bridge = false;
-    return connection;
+Path makePath() {
+    Path path;
+    path.north = false;
+    path.east = false;
+    path.south = false;
+    path.west = false;
+    return path;
 }
 
 ModelGroup makeModelGroup() {
     ModelGroup modelGroup;
-    modelGroup.waterModelAngle = 0;
     return modelGroup;
 }
 
@@ -19,10 +20,11 @@ Tile *makeTile() {
     tile->posX = 0;
     tile->posY = 0;
     tile->collapsed = false;
-    tile->north = makeConnection();
-    tile->east = makeConnection();
-    tile->south = makeConnection();
-    tile->west = makeConnection();
+    tile->land = false;
+    tile->decoration = false;
+    tile->path = makePath();
+    tile->surfaceRotation = 0;
+    tile->bridgeRotation = 0;
     tile->modelGroup = makeModelGroup();
     return tile;
 }

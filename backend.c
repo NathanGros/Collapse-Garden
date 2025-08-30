@@ -5,6 +5,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define LAND_PROBABILITY 0.5
+#define DECORATION_PROBABILITY 0.5
+#define PATH_PROBABILITY 0.2
+
+bool randFromProbability(float probability) {
+    return (rand() % 100 < 100 * probability);
+}
+
 void addTile(Grid *grid, Tile *tile) {
     grid->tiles[grid->nbTiles] = tile;
     grid->nbTiles++;
@@ -26,35 +34,22 @@ void removeTile(Grid *grid, int posX, int posY) {
     }
 }
 
-Connection makeRandomConnection() {
-    Connection connection = makeConnection();
-    if (rand() % 2 == 0)
-        connection.bridge = false;
-    else
-        connection.bridge = true;
-    if (rand() % 2 == 0)
-        connection.water = false;
-    else
-        connection.water = true;
-    return connection;
-}
-
 void collapsePlayerTile(Grid *grid, int playerX, int playerY) {
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];
         if (tile->posX == playerX && tile->posY == playerY) {
             tile->collapsed = true;
-            tile->north = makeRandomConnection();
-            tile->east = makeRandomConnection();
-            tile->south = makeRandomConnection();
-            tile->west = makeRandomConnection();
-            tile->north.bridge = true;
-            tile->east.bridge = true;
-            tile->south.bridge = true;
-            tile->west.bridge = true;
-            assignBridgeModels(tile);
-            assignBridgeCenterModel(tile);
-            assignWaterModel(tile);
+            tile->land = randFromProbability(LAND_PROBABILITY);
+            tile->decoration = randFromProbability(DECORATION_PROBABILITY);
+            tile->path.north = true;
+            tile->path.east = true;
+            tile->path.south = true;
+            tile->path.west = true;
+            tile->surfaceRotation = rand() % 4 * 90;
+            tile->bridgeRotation = rand() % 4 * 90;
+            assignSurfaceModel(tile);
+            assignBridgeModel(tile);
+            assignFenceModels(tile);
             return;
         }
     }
@@ -65,6 +60,8 @@ void collapseTile(Grid *grid, int posX, int posY) {
         Tile *tile = grid->tiles[i];
         if (tile->posX == posX && tile->posY == posY) {
             tile->collapsed = true;
+            tile->land = randFromProbability(LAND_PROBABILITY);
+            tile->decoration = randFromProbability(DECORATION_PROBABILITY);
             bool foundNorth = false;
             bool foundEast = false;
             bool foundSouth = false;
@@ -75,58 +72,52 @@ void collapseTile(Grid *grid, int posX, int posY) {
                     continue;
                 // North
                 if (otherTile->posX == tile->posX && otherTile->posY == tile->posY - 1) {
-                    tile->north = otherTile->south;
+                    tile->path.north = otherTile->path.south;
                     foundNorth = true;
                 }
                 // East
                 if (otherTile->posX == tile->posX + 1 && otherTile->posY == tile->posY) {
-                    tile->east = otherTile->west;
+                    tile->path.east = otherTile->path.west;
                     foundEast = true;
                 }
                 // South
                 if (otherTile->posX == tile->posX && otherTile->posY == tile->posY + 1) {
-                    tile->south = otherTile->north;
+                    tile->path.south = otherTile->path.north;
                     foundSouth = true;
                 }
                 // West
                 if (otherTile->posX == tile->posX - 1 && otherTile->posY == tile->posY) {
-                    tile->west = otherTile->east;
+                    tile->path.west = otherTile->path.east;
                     foundWest = true;
                 }
             }
             if (!foundNorth)
-                tile->north = makeRandomConnection();
+                tile->path.north = randFromProbability(PATH_PROBABILITY);
             if (!foundEast)
-                tile->east = makeRandomConnection();
+                tile->path.east = randFromProbability(PATH_PROBABILITY);
             if (!foundSouth)
-                tile->south = makeRandomConnection();
+                tile->path.south = randFromProbability(PATH_PROBABILITY);
             if (!foundWest)
-                tile->west = makeRandomConnection();
-            assignBridgeModels(tile);
-            assignBridgeCenterModel(tile);
-            assignWaterModel(tile);
+                tile->path.west = randFromProbability(PATH_PROBABILITY);
+            tile->surfaceRotation = rand() % 4 * 90;
+            tile->bridgeRotation = rand() % 4 * 90;
+            assignSurfaceModel(tile);
+            assignBridgeModel(tile);
+            assignFenceModels(tile);
             return;
         }
     }
 }
 
-void uncollapseTile(Grid *grid, int posX, int posY) {
-    for (int i = 0; i < grid->nbTiles; i++) {
-        Tile *tile = grid->tiles[i];
-        if (tile->posX == posX && tile->posY == posY) {
-            tile->collapsed = false;
-            tile->north.bridge = false;
-            tile->north.water = false;
-            tile->east.bridge = false;
-            tile->east.water = false;
-            tile->south.bridge = false;
-            tile->south.water = false;
-            tile->west.bridge = false;
-            tile->west.water = false;
-            tile->modelGroup.waterModelAngle = 0;
-            return;
-        }
-    }
+void uncollapseTile(Tile *tile) {
+    tile->collapsed = false;
+    tile->path.north = false;
+    tile->path.east = false;
+    tile->path.south = false;
+    tile->path.west = false;
+    tile->surfaceRotation = 0;
+    tile->bridgeRotation = 0;
+    return;
 }
 
 int countCollapsedNeighbors(Grid *grid, int posX, int posY) {
@@ -191,7 +182,7 @@ void collapseOneTile(Grid *grid) {
     free(nbGridCollapsedNeighbors);
 }
 
-void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int playerX, int playerY) {
+void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int playerX, int playerY, Sound soundRemoveTile) {
     for (int i = 0; i < grid->nbTiles; i++) {
         Tile *tile = grid->tiles[i];
         int tileX = tile->posX;
@@ -199,8 +190,17 @@ void uncollapseMouseTiles(Grid *grid, Camera3D camera, float circleRadius, int p
         if (tileX == playerX && tileY == playerY)
             continue;
         Vector2 tileCenterScreen = GetWorldToScreen((Vector3) {(float) tileX, 0.0f, (float) tileY}, camera);
+        bool flagRemovedTiles = false;
         if (CheckCollisionPointCircle(tileCenterScreen, GetMousePosition(), circleRadius)) {
-            uncollapseTile(grid, tileX, tileY);
+            for (int i = 0; i < grid->nbTiles; i++) {
+                Tile *tile = grid->tiles[i];
+                if (tile->collapsed && tile->posX == tileX && tile->posY == tileY) {
+                    flagRemovedTiles = true;
+                    uncollapseTile(tile);
+                }
+            }
         }
+        if (flagRemovedTiles)
+            PlaySound(soundRemoveTile);
     }
 }

@@ -4,30 +4,31 @@
 #include <raylib.h>
 #include <stdbool.h>
 
-// Structs
 typedef struct {
-    bool water;
-    bool bridge;
-} Connection;
+    bool north;
+    bool east;
+    bool south;
+    bool west;
+} Path;
 
 typedef struct {
-    Model *northBridge;
-    Model *eastBridge;
-    Model *southBridge;
-    Model *westBridge;
-    Model *bridgeCenter;
-    Model *water;
-    int waterModelAngle;
+    Model *northFence;
+    Model *eastFence;
+    Model *southFence;
+    Model *westFence;
+    Model *bridge;
+    Model *surface;
 } ModelGroup;
 
 typedef struct {
     int posX;
     int posY;
     bool collapsed;
-    Connection north;
-    Connection east;
-    Connection south;
-    Connection west;
+    bool land;
+    bool decoration;
+    Path path;
+    int surfaceRotation;
+    int bridgeRotation;
     ModelGroup modelGroup;
 } Tile;
 
@@ -40,7 +41,7 @@ typedef struct {
     Tile **tiles;
 } Grid;
 
-Connection makeConnection();
+Path makePath();
 
 Tile *makeTile();
 void freeTile(Tile *tile);

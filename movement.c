@@ -5,11 +5,11 @@ void updateCamera(Camera3D *camera, float *targetDistance) {
     // camera zoom
     *targetDistance *= 1. - 0.2 * GetMouseWheelMove();
     if (*targetDistance <= 10.) *targetDistance = 10.;
-    if (*targetDistance >= 70.) *targetDistance = 70.;
+    if (*targetDistance >= 40.) *targetDistance = 40.;
 
     // camera position
     float pi = 3.141592;
-    float verticalAngle = pi / 3.;
+    float verticalAngle = pi / 4.;
     float horizontalAngle = pi / 2.;
     camera->position.x = camera->target.x + *targetDistance * cos(horizontalAngle) * cos(verticalAngle);
     camera->position.y = camera->target.y + *targetDistance * sin(verticalAngle);
@@ -44,25 +44,25 @@ bool canPlayerMove(Grid *grid, int *playerX, int *playerY, int moveX, int moveY)
             currentTileIndex = i;
         }
     }
-    // Don't move if there is no bridge
+    // Don't move if there is no path
     // North
     if (moveX == 0 && moveY == -1) {
-        if (!grid->tiles[currentTileIndex]->north.bridge)
+        if (!grid->tiles[currentTileIndex]->path.north)
             return false;
     }
     // East
     if (moveX == 1 && moveY == 0) {
-        if (!grid->tiles[currentTileIndex]->east.bridge)
+        if (!grid->tiles[currentTileIndex]->path.east)
             return false;
     }
     // South
     if (moveX == 0 && moveY == 1) {
-        if (!grid->tiles[currentTileIndex]->south.bridge)
+        if (!grid->tiles[currentTileIndex]->path.south)
             return false;
     }
     // West
     if (moveX == -1 && moveY == 0) {
-        if (!grid->tiles[currentTileIndex]->west.bridge)
+        if (!grid->tiles[currentTileIndex]->path.west)
             return false;
     }
     // Move grid

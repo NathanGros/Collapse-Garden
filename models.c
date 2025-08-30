@@ -3,60 +3,66 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NB_BRIDGE_MODELS 1
-#define NB_BRIDGE_CENTER_MODELS 2
-#define NB_WATER_X_MODELS 1
-#define NB_WATER_U_MODELS 1
-#define NB_WATER_L_MODELS 1
-#define NB_WATER_I_MODELS 1
-#define NB_WATER_END_MODELS 1
-#define NB_WATER_NONE_MODELS 1
+#define NB_LAND_MODELS 1
+#define NB_WATER_MODELS 1
+#define NB_BRIDGE_X_MODELS 1
+#define NB_BRIDGE_U_MODELS 1
+#define NB_BRIDGE_L_MODELS 4
+#define NB_BRIDGE_I_MODELS 1
+#define NB_BRIDGE_END_MODELS 1
+#define NB_BRIDGE_NONE_MODELS 1
+#define NB_FENCE_MODELS 1
 #define NB_CLOUD_MODELS 1
 #define NB_PLAYER_MODELS 1
 
 // Models lists
-Model bridgeModels[NB_BRIDGE_MODELS];
-Model bridgeCenterModels[NB_BRIDGE_CENTER_MODELS];
-Model waterXModels[NB_WATER_X_MODELS];
-Model waterUModels[NB_WATER_U_MODELS];
-Model waterLModels[NB_WATER_L_MODELS];
-Model waterIModels[NB_WATER_I_MODELS];
-Model waterEndModels[NB_WATER_END_MODELS];
-Model waterNoneModels[NB_WATER_NONE_MODELS];
+Model landModels[NB_LAND_MODELS];
+Model waterModels[NB_WATER_MODELS];
+Model bridgeXModels[NB_BRIDGE_X_MODELS];
+Model bridgeUModels[NB_BRIDGE_U_MODELS];
+Model bridgeLModels[NB_BRIDGE_L_MODELS];
+Model bridgeIModels[NB_BRIDGE_I_MODELS];
+Model bridgeEndModels[NB_BRIDGE_END_MODELS];
+Model bridgeNoneModels[NB_BRIDGE_NONE_MODELS];
+Model fenceModels[NB_FENCE_MODELS];
 Model cloudModels[NB_CLOUD_MODELS];
 Model playerModels[NB_PLAYER_MODELS];
 
 // Getters
-Model *getBridgeModels() {
-    return bridgeModels;
+Model *getLandModels() {
+    return landModels;
 }
 
-Model *getBridgeCenterModels() {
-    return bridgeCenterModels;
+Model *getWaterModels() {
+    return waterModels;
 }
 
-Model *getWaterXModels() {
-    return waterXModels;
+Model *getBridgeXModels() {
+    return bridgeXModels;
 }
 
-Model *getWaterUModels() {
-    return waterUModels;
+Model *getBridgeUModels() {
+    return bridgeUModels;
 }
 
-Model *getWaterLModels() {
-    return waterLModels;
+Model *getBridgeLModels() {
+    return bridgeLModels;
 }
 
-Model *getWaterIModels() {
-    return waterIModels;
+Model *getBridgeIModels() {
+    return bridgeIModels;
 }
 
-Model *getWaterEndModels() {
-    return waterEndModels;
+Model *getBridgeEndModels() {
+    return bridgeEndModels;
 }
 
-Model *getWaterNoneModels() {
-    return waterNoneModels;
+Model *getBridgeNoneModels() {
+    return bridgeNoneModels;
+}
+
+Model *getFenceModels() {
+    return fenceModels;
 }
 
 Model *getCloudModels() {
@@ -68,123 +74,138 @@ Model *getPlayerModels() {
 }
 
 // Loading and unloading
-void loadBridgeModels(Shader shadowShader) {
-    for (int i = 0; i < NB_BRIDGE_MODELS; i++) {
+void loadLandModels(Shader shadowShader) {
+    for (int i = 0; i < NB_LAND_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/bridges/bridge_%d.obj", i + 1);
-        bridgeModels[i] = LoadModel(modelName);
-        bridgeModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/surfaces/land/land_%d.obj", i + 1);
+        landModels[i] = LoadModel(modelName);
+        landModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadBridgeModels() {
-    for (int i = 0; i < NB_BRIDGE_MODELS; i++) {
-        UnloadModel(bridgeModels[i]);
+void unloadLandModels() {
+    for (int i = 0; i < NB_LAND_MODELS; i++) {
+        UnloadModel(landModels[i]);
     }
 }
 
-void loadBridgeCenterModels(Shader shadowShader) {
-    for (int i = 0; i < NB_BRIDGE_CENTER_MODELS; i++) {
+void loadWaterModels(Shader shadowShader) {
+    for (int i = 0; i < NB_WATER_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/bridge_centers/bridge_center_%d.obj", i + 1);
-        bridgeCenterModels[i] = LoadModel(modelName);
-        bridgeCenterModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/surfaces/water/water_%d.obj", i + 1);
+        waterModels[i] = LoadModel(modelName);
+        waterModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadBridgeCenterModels() {
-    for (int i = 0; i < NB_BRIDGE_CENTER_MODELS; i++) {
-        UnloadModel(bridgeCenterModels[i]);
+void unloadWaterModels() {
+    for (int i = 0; i < NB_WATER_MODELS; i++) {
+        UnloadModel(waterModels[i]);
     }
 }
 
-void loadWaterXModels(Shader shadowShader) {
-    for (int i = 0; i < NB_WATER_X_MODELS; i++) {
+void loadBridgeXModels(Shader shadowShader) {
+    for (int i = 0; i < NB_BRIDGE_X_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/water/water_x/water_x_%d.obj", i + 1);
-        waterXModels[i] = LoadModel(modelName);
-        waterXModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/bridges/bridges_x/bridge_x_%d.obj", i + 1);
+        bridgeXModels[i] = LoadModel(modelName);
+        bridgeXModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadWaterXModels() {
-    for (int i = 0; i < NB_WATER_X_MODELS; i++) {
-        UnloadModel(waterXModels[i]);
+void unloadBridgeXModels() {
+    for (int i = 0; i < NB_BRIDGE_X_MODELS; i++) {
+        UnloadModel(bridgeXModels[i]);
     }
 }
 
-void loadWaterUModels(Shader shadowShader) {
-    for (int i = 0; i < NB_WATER_U_MODELS; i++) {
+void loadBridgeUModels(Shader shadowShader) {
+    for (int i = 0; i < NB_BRIDGE_U_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/water/water_u/water_u_%d.obj", i + 1);
-        waterUModels[i] = LoadModel(modelName);
-        waterUModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/bridges/bridges_u/bridge_u_%d.obj", i + 1);
+        bridgeUModels[i] = LoadModel(modelName);
+        bridgeUModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadWaterUModels() {
-    for (int i = 0; i < NB_WATER_U_MODELS; i++) {
-        UnloadModel(waterUModels[i]);
+void unloadBridgeUModels() {
+    for (int i = 0; i < NB_BRIDGE_U_MODELS; i++) {
+        UnloadModel(bridgeUModels[i]);
     }
 }
 
-void loadWaterLModels(Shader shadowShader) {
-    for (int i = 0; i < NB_WATER_L_MODELS; i++) {
+void loadBridgeLModels(Shader shadowShader) {
+    for (int i = 0; i < NB_BRIDGE_L_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/water/water_l/water_l_%d.obj", i + 1);
-        waterLModels[i] = LoadModel(modelName);
-        waterLModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/bridges/bridges_l/bridge_l_%d.obj", i + 1);
+        bridgeLModels[i] = LoadModel(modelName);
+        bridgeLModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadWaterLModels() {
-    for (int i = 0; i < NB_WATER_L_MODELS; i++) {
-        UnloadModel(waterLModels[i]);
+void unloadBridgeLModels() {
+    for (int i = 0; i < NB_BRIDGE_L_MODELS; i++) {
+        UnloadModel(bridgeLModels[i]);
     }
 }
 
-void loadWaterIModels(Shader shadowShader) {
-    for (int i = 0; i < NB_WATER_I_MODELS; i++) {
+void loadBridgeIModels(Shader shadowShader) {
+    for (int i = 0; i < NB_BRIDGE_I_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/water/water_i/water_i_%d.obj", i + 1);
-        waterIModels[i] = LoadModel(modelName);
-        waterIModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/bridges/bridges_i/bridge_i_%d.obj", i + 1);
+        bridgeIModels[i] = LoadModel(modelName);
+        bridgeIModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadWaterIModels() {
-    for (int i = 0; i < NB_WATER_I_MODELS; i++) {
-        UnloadModel(waterIModels[i]);
+void unloadBridgeIModels() {
+    for (int i = 0; i < NB_BRIDGE_I_MODELS; i++) {
+        UnloadModel(bridgeIModels[i]);
     }
 }
 
-void loadWaterEndModels(Shader shadowShader) {
-    for (int i = 0; i < NB_WATER_END_MODELS; i++) {
+void loadBridgeEndModels(Shader shadowShader) {
+    for (int i = 0; i < NB_BRIDGE_END_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/water/water_end/water_end_%d.obj", i + 1);
-        waterEndModels[i] = LoadModel(modelName);
-        waterEndModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/bridges/bridges_end/bridge_end_%d.obj", i + 1);
+        bridgeEndModels[i] = LoadModel(modelName);
+        bridgeEndModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadWaterEndModels() {
-    for (int i = 0; i < NB_WATER_END_MODELS; i++) {
-        UnloadModel(waterEndModels[i]);
+void unloadBridgeEndModels() {
+    for (int i = 0; i < NB_BRIDGE_END_MODELS; i++) {
+        UnloadModel(bridgeEndModels[i]);
     }
 }
 
-void loadWaterNoneModels(Shader shadowShader) {
-    for (int i = 0; i < NB_WATER_NONE_MODELS; i++) {
+void loadBridgeNoneModels(Shader shadowShader) {
+    for (int i = 0; i < NB_BRIDGE_NONE_MODELS; i++) {
         char modelName[100];
-        sprintf(modelName, "assets/water/water_none/water_none_%d.obj", i + 1);
-        waterNoneModels[i] = LoadModel(modelName);
-        waterNoneModels[i].materials[0].shader = shadowShader;
+        sprintf(modelName, "assets/bridges/bridges_none/bridge_none_%d.obj", i + 1);
+        bridgeNoneModels[i] = LoadModel(modelName);
+        bridgeNoneModels[i].materials[0].shader = shadowShader;
     }
 }
 
-void unloadWaterNoneModels() {
-    for (int i = 0; i < NB_WATER_NONE_MODELS; i++) {
-        UnloadModel(waterNoneModels[i]);
+void unloadBridgeNoneModels() {
+    for (int i = 0; i < NB_BRIDGE_NONE_MODELS; i++) {
+        UnloadModel(bridgeNoneModels[i]);
+    }
+}
+
+void loadFenceModels(Shader shadowShader) {
+    for (int i = 0; i < NB_FENCE_MODELS; i++) {
+        char modelName[100];
+        sprintf(modelName, "assets/fences/fence_%d.obj", i + 1);
+        fenceModels[i] = LoadModel(modelName);
+        fenceModels[i].materials[0].shader = shadowShader;
+    }
+}
+
+void unloadFenceModels() {
+    for (int i = 0; i < NB_FENCE_MODELS; i++) {
+        UnloadModel(fenceModels[i]);
     }
 }
 
@@ -219,132 +240,133 @@ void unloadPlayerModels() {
 }
 
 void loadModels(Shader shadowShader) {
-    loadBridgeModels(shadowShader);
-    loadBridgeCenterModels(shadowShader);
-    loadWaterXModels(shadowShader);
-    loadWaterUModels(shadowShader);
-    loadWaterLModels(shadowShader);
-    loadWaterIModels(shadowShader);
-    loadWaterEndModels(shadowShader);
-    loadWaterNoneModels(shadowShader);
+    loadLandModels(shadowShader);
+    loadWaterModels(shadowShader);
+    loadBridgeXModels(shadowShader);
+    loadBridgeUModels(shadowShader);
+    loadBridgeLModels(shadowShader);
+    loadBridgeIModels(shadowShader);
+    loadBridgeEndModels(shadowShader);
+    loadBridgeNoneModels(shadowShader);
+    loadFenceModels(shadowShader);
     loadCloudModels(shadowShader);
     loadPlayerModels(shadowShader);
 }
 
 void unloadModels() {
-    unloadBridgeModels();
-    unloadBridgeCenterModels();
-    unloadWaterXModels();
-    unloadWaterUModels();
-    unloadWaterLModels();
-    unloadWaterIModels();
-    unloadWaterEndModels();
-    unloadWaterNoneModels();
+    unloadLandModels();
+    unloadWaterModels();
+    unloadBridgeXModels();
+    unloadBridgeUModels();
+    unloadBridgeLModels();
+    unloadBridgeIModels();
+    unloadBridgeEndModels();
+    unloadBridgeNoneModels();
+    unloadFenceModels();
     unloadCloudModels();
     unloadPlayerModels();
 }
 
-void assignBridgeModels(Tile *tile) {
-    if (tile->north.bridge)
-        tile->modelGroup.northBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
-    if (tile->east.bridge)
-        tile->modelGroup.eastBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
-    if (tile->south.bridge)
-        tile->modelGroup.southBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
-    if (tile->west.bridge)
-        tile->modelGroup.westBridge = &bridgeModels[rand() % NB_BRIDGE_MODELS];
+void assignSurfaceModel(Tile *tile) {
+    if (tile->land)
+        tile->modelGroup.surface = &landModels[rand() % NB_LAND_MODELS];
+    else
+        tile->modelGroup.surface = &waterModels[rand() % NB_WATER_MODELS];
 }
 
-void assignBridgeCenterModel(Tile *tile) {
-    tile->modelGroup.bridgeCenter = &bridgeCenterModels[rand() % NB_BRIDGE_CENTER_MODELS];
-}
-
-void assignWaterModel(Tile *tile) {
-    bool northWater = tile->north.water;
-    bool eastWater = tile->east.water;
-    bool southWater = tile->south.water;
-    bool westWater = tile->west.water;
-    int nbWater = 0;
-    if (northWater) nbWater++;
-    if (eastWater) nbWater++;
-    if (southWater) nbWater++;
-    if (westWater) nbWater++;
-    if (nbWater == 4) {
-        tile->modelGroup.water = &waterXModels[rand() % NB_WATER_X_MODELS];
-        tile->modelGroup.waterModelAngle = rand() % 4 * 90;
+void assignBridgeModel(Tile *tile) {
+    bool northBridge = tile->path.north;
+    bool eastBridge = tile->path.east;
+    bool southBridge = tile->path.south;
+    bool westBridge = tile->path.west;
+    int nbBridge = 0;
+    if (northBridge) nbBridge++;
+    if (eastBridge) nbBridge++;
+    if (southBridge) nbBridge++;
+    if (westBridge) nbBridge++;
+    if (nbBridge == 4) {
+        tile->modelGroup.bridge = &bridgeXModels[rand() % NB_BRIDGE_X_MODELS];
+        tile->bridgeRotation = rand() % 4 * 90;
     }
-    else if (nbWater == 0 ) {
-        tile->modelGroup.water = &waterNoneModels[rand() % NB_WATER_NONE_MODELS];
-        tile->modelGroup.waterModelAngle = rand() % 4 * 90;
+    else if (nbBridge == 0 ) {
+        tile->modelGroup.bridge = &bridgeNoneModels[rand() % NB_BRIDGE_NONE_MODELS];
+        tile->bridgeRotation = rand() % 4 * 90;
     }
-    else if (nbWater == 3) {
-        tile->modelGroup.water = &waterUModels[rand() % NB_WATER_U_MODELS];
-        if (!northWater) {
-            tile->modelGroup.waterModelAngle = 180;
+    else if (nbBridge == 3) {
+        tile->modelGroup.bridge = &bridgeUModels[rand() % NB_BRIDGE_U_MODELS];
+        if (!northBridge) {
+            tile->bridgeRotation = 180;
             return;
         }
-        if (!eastWater) {
-            tile->modelGroup.waterModelAngle = 90;
+        if (!eastBridge) {
+            tile->bridgeRotation = 90;
             return;
         }
-        if (!southWater) {
-            tile->modelGroup.waterModelAngle = 0;
+        if (!southBridge) {
+            tile->bridgeRotation = 0;
             return;
         }
-        if (!westWater) {
-            tile->modelGroup.waterModelAngle = -90;
+        if (!westBridge) {
+            tile->bridgeRotation = -90;
             return;
         }
     }
-    else if (nbWater == 2) {
-        if (northWater && southWater) {
-            tile->modelGroup.water = &waterIModels[rand() % NB_WATER_I_MODELS];
-            tile->modelGroup.waterModelAngle = rand() % 2 * 180 + 90;
+    else if (nbBridge == 2) {
+        if (northBridge && southBridge) {
+            tile->modelGroup.bridge = &bridgeIModels[rand() % NB_BRIDGE_I_MODELS];
+            tile->bridgeRotation = rand() % 2 * 180 + 90;
         }
-        else if (eastWater && westWater) {
-            tile->modelGroup.water = &waterIModels[rand() % NB_WATER_I_MODELS];
-            tile->modelGroup.waterModelAngle = rand() % 2 * 180;
+        else if (eastBridge && westBridge) {
+            tile->modelGroup.bridge = &bridgeIModels[rand() % NB_BRIDGE_I_MODELS];
+            tile->bridgeRotation = rand() % 2 * 180;
         }
         else {
-            tile->modelGroup.water = &waterLModels[rand() % NB_WATER_L_MODELS];
-            if (northWater && eastWater) {
-                tile->modelGroup.waterModelAngle = 0;
+            tile->modelGroup.bridge = &bridgeLModels[rand() % NB_BRIDGE_L_MODELS];
+            if (northBridge && eastBridge) {
+                tile->bridgeRotation = 0;
                 return;
             }
-            if (eastWater && southWater) {
-                tile->modelGroup.waterModelAngle = -90;
+            if (eastBridge && southBridge) {
+                tile->bridgeRotation = -90;
                 return;
             }
-            if (southWater && westWater) {
-                tile->modelGroup.waterModelAngle = 180;
+            if (southBridge && westBridge) {
+                tile->bridgeRotation = 180;
                 return;
             }
-            if (westWater && northWater) {
-                tile->modelGroup.waterModelAngle = 90;
+            if (westBridge && northBridge) {
+                tile->bridgeRotation = 90;
                 return;
             }
         }
     }
-    else if (nbWater == 1) {
-        tile->modelGroup.water = &waterEndModels[rand() % NB_WATER_END_MODELS];
-        if (northWater) {
-            tile->modelGroup.waterModelAngle = 0;
+    else if (nbBridge == 1) {
+        tile->modelGroup.bridge = &bridgeEndModels[rand() % NB_BRIDGE_END_MODELS];
+        if (northBridge) {
+            tile->bridgeRotation = 0;
             return;
         }
-        if (eastWater) {
-            tile->modelGroup.waterModelAngle = -90;
+        if (eastBridge) {
+            tile->bridgeRotation = -90;
             return;
         }
-        if (southWater) {
-            tile->modelGroup.waterModelAngle = 180;
+        if (southBridge) {
+            tile->bridgeRotation = 180;
             return;
         }
-        if (westWater) {
-            tile->modelGroup.waterModelAngle = 90;
+        if (westBridge) {
+            tile->bridgeRotation = 90;
             return;
         }
     }
     else {
-        printf("Invalid Water tile\n");
+        printf("Invalid Bridge tile\n");
     }
+}
+
+void assignFenceModels(Tile *tile) {
+    tile->modelGroup.northFence = &fenceModels[rand() % NB_FENCE_MODELS];
+    tile->modelGroup.eastFence = &fenceModels[rand() % NB_FENCE_MODELS];
+    tile->modelGroup.southFence = &fenceModels[rand() % NB_FENCE_MODELS];
+    tile->modelGroup.westFence = &fenceModels[rand() % NB_FENCE_MODELS];
 }
