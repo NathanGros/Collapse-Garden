@@ -6,8 +6,17 @@
 #include <stdlib.h>
 
 #define LAND_PROBABILITY 0.5
-#define DECORATION_PROBABILITY 0.5
-#define PATH_PROBABILITY 0.3
+#define DECORATION_PROBABILITY 0.2
+#define PATH_LAND_0_PROBABILITY 0.1
+#define PATH_LAND_1_PROBABILITY 0.1
+#define PATH_LAND_2_PROBABILITY 0.2
+#define PATH_LAND_3_PROBABILITY 0.3
+#define PATH_LAND_4_PROBABILITY 0.3
+#define PATH_WATER_0_PROBABILITY 0.5
+#define PATH_WATER_1_PROBABILITY 0.0
+#define PATH_WATER_2_PROBABILITY 0.4
+#define PATH_WATER_3_PROBABILITY 0.1
+#define PATH_WATER_4_PROBABILITY 0.0
 
 bool randFromProbability(float probability) {
     return (rand() % 100 < 100 * probability);
@@ -60,45 +69,208 @@ void collapseTile(Grid *grid, int posX, int posY) {
         Tile *tile = grid->tiles[i];
         if (tile->posX == posX && tile->posY == posY) {
             tile->collapsed = true;
-            tile->land = randFromProbability(LAND_PROBABILITY);
+            tile->path.north = false;
+            tile->path.east = false;
+            tile->path.south = false;
+            tile->path.west = false;
             tile->decoration = randFromProbability(DECORATION_PROBABILITY);
             bool foundNorth = false;
             bool foundEast = false;
             bool foundSouth = false;
             bool foundWest = false;
+            int nbFoundPath = 0;
+            int nbAdjacentLand = 0;
+            int nbAdjacentWater = 0;
             for (int j = 0; j < grid->nbTiles; j++) {
                 Tile *otherTile = grid->tiles[j];
                 if (!otherTile->collapsed)
                     continue;
+                // North West
+                if (otherTile->posX == tile->posX - 1 && otherTile->posY == tile->posY - 1) {
+                    if (otherTile->land)
+                        nbAdjacentLand += 0.5;
+                    else
+                        nbAdjacentWater += 0.5;
+                }
                 // North
                 if (otherTile->posX == tile->posX && otherTile->posY == tile->posY - 1) {
                     tile->path.north = otherTile->path.south;
                     foundNorth = true;
+                    nbFoundPath++;
+                    if (otherTile->land)
+                        nbAdjacentLand++;
+                    else
+                        nbAdjacentWater++;
+                }
+                // North East
+                if (otherTile->posX == tile->posX + 1 && otherTile->posY == tile->posY - 1) {
+                    if (otherTile->land)
+                        nbAdjacentLand += 0.5;
+                    else
+                        nbAdjacentWater += 0.5;
                 }
                 // East
                 if (otherTile->posX == tile->posX + 1 && otherTile->posY == tile->posY) {
                     tile->path.east = otherTile->path.west;
                     foundEast = true;
+                    nbFoundPath++;
+                    if (otherTile->land)
+                        nbAdjacentLand++;
+                    else
+                        nbAdjacentWater++;
+                }
+                // South East
+                if (otherTile->posX == tile->posX + 1 && otherTile->posY == tile->posY + 1) {
+                    if (otherTile->land)
+                        nbAdjacentLand += 0.5;
+                    else
+                        nbAdjacentWater += 0.5;
                 }
                 // South
                 if (otherTile->posX == tile->posX && otherTile->posY == tile->posY + 1) {
                     tile->path.south = otherTile->path.north;
                     foundSouth = true;
+                    nbFoundPath++;
+                    if (otherTile->land)
+                        nbAdjacentLand++;
+                    else
+                        nbAdjacentWater++;
+                }
+                // South West
+                if (otherTile->posX == tile->posX - 1 && otherTile->posY == tile->posY + 1) {
+                    if (otherTile->land)
+                        nbAdjacentLand += 0.5;
+                    else
+                        nbAdjacentWater += 0.5;
                 }
                 // West
                 if (otherTile->posX == tile->posX - 1 && otherTile->posY == tile->posY) {
                     tile->path.west = otherTile->path.east;
                     foundWest = true;
+                    nbFoundPath++;
+                    if (otherTile->land)
+                        nbAdjacentLand++;
+                    else
+                        nbAdjacentWater++;
                 }
             }
-            if (!foundNorth)
-                tile->path.north = randFromProbability(PATH_PROBABILITY);
-            if (!foundEast)
-                tile->path.east = randFromProbability(PATH_PROBABILITY);
-            if (!foundSouth)
-                tile->path.south = randFromProbability(PATH_PROBABILITY);
-            if (!foundWest)
-                tile->path.west = randFromProbability(PATH_PROBABILITY);
+            // Random land with bias if there's more land around
+            int landProbabilityResult = rand() % 100;
+            if (landProbabilityResult < 10)
+                tile->land = true;
+            else if (landProbabilityResult >= 90)
+                tile->land = false;
+            else {
+                tile->land = rand() % 80 < 80. * (float) nbAdjacentLand / (float) (nbAdjacentLand + nbAdjacentWater);
+            }
+            // Compute paths from defined probabilities
+            int nbWantedPath = 0;
+            float randResult = (float) (rand() % 100) / 100.;
+            if (tile->land) {
+                float threshold = PATH_LAND_0_PROBABILITY;
+                if (randResult < threshold) nbWantedPath = 0;
+                else {
+                    threshold += PATH_LAND_1_PROBABILITY;
+                    if (randResult < threshold) nbWantedPath = 1;
+                    else {
+                        threshold += PATH_LAND_2_PROBABILITY;
+                        if (randResult < threshold) nbWantedPath = 2;
+                        else {
+                            threshold += PATH_LAND_3_PROBABILITY;
+                            if (randResult < threshold) nbWantedPath = 3;
+                            else nbWantedPath = 4;
+                        }
+                    }
+                }
+            }
+            else {
+                float threshold = PATH_WATER_0_PROBABILITY;
+                if (randResult < threshold) nbWantedPath = 0;
+                else {
+                    threshold += PATH_WATER_1_PROBABILITY;
+                    if (randResult < threshold) nbWantedPath = 1;
+                    else {
+                        threshold += PATH_WATER_2_PROBABILITY;
+                        if (randResult < threshold) nbWantedPath = 2;
+                        else {
+                            threshold += PATH_WATER_3_PROBABILITY;
+                            if (randResult < threshold) nbWantedPath = 3;
+                            else nbWantedPath = 4;
+                        }
+                    }
+                }
+            }
+            int nbPathOn = 0;
+            if (tile->path.north) nbPathOn++;
+            if (tile->path.east) nbPathOn++;
+            if (tile->path.south) nbPathOn++;
+            if (tile->path.west) nbPathOn++;
+            if (nbWantedPath > nbPathOn) {
+                int nbPathNeeded = nbWantedPath - nbPathOn;
+                int nbAvailablePath = 4 - nbFoundPath;
+                if (nbPathNeeded >= nbAvailablePath) { // Fill available paths
+                    if (!foundNorth) tile->path.north = true;
+                    if (!foundEast) tile->path.east = true;
+                    if (!foundSouth) tile->path.south = true;
+                    if (!foundWest) tile->path.west = true;
+                }
+                else { // Fill nbPathNeeded of available paths randomly
+                    int nbLeftToFill = nbPathNeeded;
+                    int nbLeftAvailable = nbAvailablePath;
+                    if (!foundNorth) {
+                        if (nbLeftToFill == nbLeftAvailable) {
+                            tile->path.north = true;
+                            nbLeftToFill--;
+                            nbLeftAvailable--;
+                        }
+                        else {
+                            if (randFromProbability((float) nbLeftToFill / (float) nbLeftAvailable)) {
+                                tile->path.north = true;
+                                nbLeftToFill--;
+                            }
+                        }
+                    }
+                    if (!foundEast) {
+                        if (nbLeftToFill == nbLeftAvailable) {
+                            tile->path.east = true;
+                            nbLeftToFill--;
+                            nbLeftAvailable--;
+                        }
+                        else {
+                            if (randFromProbability((float) nbLeftToFill / (float) nbLeftAvailable)) {
+                                tile->path.east = true;
+                                nbLeftToFill--;
+                            }
+                        }
+                    }
+                    if (!foundSouth) {
+                        if (nbLeftToFill == nbLeftAvailable) {
+                            tile->path.south = true;
+                            nbLeftToFill--;
+                            nbLeftAvailable--;
+                        }
+                        else {
+                            if (randFromProbability((float) nbLeftToFill / (float) nbLeftAvailable)) {
+                                tile->path.south = true;
+                                nbLeftToFill--;
+                            }
+                        }
+                    }
+                    if (!foundWest) {
+                        if (nbLeftToFill == nbLeftAvailable) {
+                            tile->path.west = true;
+                            nbLeftToFill--;
+                            nbLeftAvailable--;
+                        }
+                        else {
+                            if (randFromProbability((float) nbLeftToFill / (float) nbLeftAvailable)) {
+                                tile->path.west = true;
+                                nbLeftToFill--;
+                            }
+                        }
+                    }
+                }
+            }
             tile->surfaceRotation = rand() % 4 * 90;
             tile->bridgeRotation = rand() % 4 * 90;
             assignSurfaceModel(tile);
