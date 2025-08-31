@@ -55,7 +55,7 @@ void UnloadShadowmapRenderTexture(RenderTexture2D target) {
 
 int main() {
     // Init
-    Color backgroundColor = (Color){242, 228, 207};
+    Color backgroundColor = (Color){220, 218, 200};
     windowSetup(backgroundColor);
     HideCursor();
     int screenWidth = GetScreenWidth();
@@ -238,6 +238,7 @@ int main() {
             EndMode3D();
             if (timerCircleOverlay <= 2.)
                 drawCircleOverlay(circleOverlayRadius);
+            DrawFPS(0, 0);
         EndDrawing();
     }
     // De-init

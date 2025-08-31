@@ -5,12 +5,12 @@
 
 #define NB_LAND_MODELS 1
 #define NB_WATER_MODELS 1
-#define NB_BRIDGE_X_MODELS 1
-#define NB_BRIDGE_U_MODELS 1
+#define NB_BRIDGE_X_MODELS 4
+#define NB_BRIDGE_U_MODELS 8
 #define NB_BRIDGE_L_MODELS 4
-#define NB_BRIDGE_I_MODELS 1
-#define NB_BRIDGE_END_MODELS 1
-#define NB_BRIDGE_NONE_MODELS 1
+#define NB_BRIDGE_I_MODELS 4
+#define NB_BRIDGE_END_MODELS 4
+#define NB_BRIDGE_NONE_MODELS 3
 #define NB_FENCE_MODELS 1
 #define NB_CLOUD_MODELS 1
 #define NB_PLAYER_MODELS 1
@@ -314,11 +314,11 @@ void assignBridgeModel(Tile *tile) {
     else if (nbBridge == 2) {
         if (northBridge && southBridge) {
             tile->modelGroup.bridge = &bridgeIModels[rand() % NB_BRIDGE_I_MODELS];
-            tile->bridgeRotation = rand() % 2 * 180 + 90;
+            tile->bridgeRotation = rand() % 2 * 180;
         }
         else if (eastBridge && westBridge) {
             tile->modelGroup.bridge = &bridgeIModels[rand() % NB_BRIDGE_I_MODELS];
-            tile->bridgeRotation = rand() % 2 * 180;
+            tile->bridgeRotation = rand() % 2 * 180 + 90;
         }
         else {
             tile->modelGroup.bridge = &bridgeLModels[rand() % NB_BRIDGE_L_MODELS];
